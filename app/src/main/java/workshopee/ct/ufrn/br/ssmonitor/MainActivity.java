@@ -24,10 +24,15 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 public class MainActivity extends ActionBarActivity
@@ -132,7 +137,7 @@ public class MainActivity extends ActionBarActivity
          //fragment.
 
         private static final String ARG_SECTION_NUMBER = "section_number";
-
+        GoogleMap mMap;
 
          // Returns a new instance of this fragment for the given section
          //number.
@@ -225,21 +230,15 @@ public class MainActivity extends ActionBarActivity
                     case 2:
                         rootView = inflater.inflate(R.layout.activity_mapa, container, false);
 
-                        GoogleMap mMap = ((SupportMapFragment) getActivity().getSupportFragmentManager()
-                                .findFragmentById(R.id.map)).getMap();
+                        mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Estou aqui"));
+                        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        //mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                        //mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-                       /* GoogleMap map = ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map))
-                                .getMap();
-
-                        Marker marker = map.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .title("Estou aqui"));
-                        map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                                              //.MAP_TYPE_HYBRID
-                                              //.MAP_TYPE_NORMAL
-                                              //.MAP_TYPE_SATELITE
-                        map.getUiSettings().setZoomGesturesEnabled(true); //Permite zoom
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 13));*/
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 10);
+                        mMap.animateCamera(cameraUpdate);
                         break;
                     case 3:
                         break;
