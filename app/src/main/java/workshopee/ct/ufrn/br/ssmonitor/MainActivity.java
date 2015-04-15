@@ -174,7 +174,6 @@ public class MainActivity extends ActionBarActivity
                     default:
                         netWorkType= "Unknown";
                 }
-
                 //mensagem de Log.
                 Log.i("Called: ", "location changed. Lat: " + latitude + " lng: " + longitude);
             }
@@ -198,7 +197,6 @@ public class MainActivity extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position))
                         .commit();

@@ -7,7 +7,7 @@
     tools:context=".inicio$PlaceholderFragment"
     android:background="@color/material_blue_grey_950">
 
-    <TextView android:id="@+id/section_label" android:layout_width="wrap_content"
+    <TextView android:id="@+id/bemvindo" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bem-Vindo"
         android:textSize="@dimen/abc_text_size_display_2_material"
@@ -16,6 +16,30 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Signal Strength Monitor"
+        android:id="@+id/appName"
+        android:layout_below="@+id/bemvindo"
+        android:textSize="@dimen/abc_text_size_headline_material"
+        android:textColor="@color/primary_material_light"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp" />
+
+    <ImageView
+        android:layout_width="400px"
+        android:layout_height="400px"
+        android:id="@+id/imageView"
+        android:src="@drawable/icon"
+        android:layout_below="@+id/appName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+</RelativeLayout>
+
+    <!--
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,27 +76,4 @@
         android:textColor="@color/primary_material_light"
         android:layout_below="@+id/marcos"
         android:textSize="@dimen/abc_text_size_title_material"
-        android:layout_centerHorizontal="true" />
-
-    <ImageView
-        android:layout_width="400px"
-        android:layout_height="400px"
-        android:id="@+id/imageView"
-        android:src="@drawable/icon"
-
-        android:layout_marginTop="54dp"
-        android:layout_below="@+id/section_label"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Signal Strength Monitor"
-        android:id="@+id/textView2"
-        android:textSize="@dimen/abc_text_size_headline_material"
-        android:textColor="@color/primary_material_light"
-        android:layout_below="@+id/section_label"
-        android:layout_centerHorizontal="true" />
-
-</RelativeLayout>
+        android:layout_centerHorizontal="true" /> -->

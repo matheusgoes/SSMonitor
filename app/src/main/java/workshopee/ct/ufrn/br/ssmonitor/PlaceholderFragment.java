@@ -57,7 +57,6 @@ public class PlaceholderFragment extends Fragment {
 
         int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
         //Encontra latitude e longitude
-        rootView = inflater.inflate(R.layout.fragment_monitor, container, false);
         Criteria criteria = new Criteria();
         Location location;
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -76,6 +75,7 @@ public class PlaceholderFragment extends Fragment {
 
         switch (sectionNumber) {
             case 1:
+                rootView = inflater.inflate(R.layout.fragment_monitor, container, false);
                 TextView latitude_textview = (TextView) rootView.findViewById(R.id.lat);
                 latitude_textview.setText("Latitude: " + latitude);
                 TextView longitude_textview = (TextView) rootView.findViewById(R.id.lon);
@@ -189,10 +189,13 @@ public class PlaceholderFragment extends Fragment {
                 break;
             case 2:
                 rootView = inflater.inflate(R.layout.activity_mapa, container, false);
-
                 marcarPosicao();
                 break;
             case 3:
+                rootView = inflater.inflate(R.layout.fragment_graficos, container, false);
+                break;
+            case 4:
+                rootView = inflater.inflate(R.layout.fragment_sobre, container, false);
                 break;
             default:
                 rootView = inflater.inflate(R.layout.fragment_main, container, false);
