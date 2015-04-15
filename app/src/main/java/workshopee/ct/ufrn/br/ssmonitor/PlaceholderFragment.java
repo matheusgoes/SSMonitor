@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.telephony.CellInfoWcdma;
 import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,9 +24,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-/**
- * Created by matheusgoes on 15/04/15.
- */
 public class PlaceholderFragment extends Fragment {
 
     // The fragment argument representing the section number for this
@@ -65,7 +63,8 @@ public class PlaceholderFragment extends Fragment {
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         LocationManager locationmanager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         String provider = locationmanager.getBestProvider(criteria, true);
-        if (!locationmanager.getLastKnownLocation(provider).equals(null)){
+
+        if (locationmanager.getLastKnownLocation(provider)!=null){
             location= locationmanager.getLastKnownLocation(provider);
             latitude = location.getLatitude();
             longitude = location.getLongitude();
@@ -84,26 +83,91 @@ public class PlaceholderFragment extends Fragment {
 
 
                 //Encontra dados de conexão
-                int cid = 0;
-                int lac = 0;
+                String cid;
+                String lac;
                 int mcc = 0;
                 int mnc = 0;
                 int torres;
                 double dbm;
+                int networkTypeCode;
+                String netWorkType;
                 TextView forcasinal = (TextView) rootView.findViewById(R.id.forca),
                         operadoraview = (TextView) rootView.findViewById(R.id.operadora),
                         mccview = (TextView) rootView.findViewById(R.id.mcc),
                         mncview = (TextView) rootView.findViewById(R.id.mnc),
                         cidview = (TextView) rootView.findViewById(R.id.cid),
-                        lacview = (TextView) rootView.findViewById(R.id.lac);
+                        lacview = (TextView) rootView.findViewById(R.id.lac),
+                        netWork = (TextView) rootView.findViewById(R.id.tipoderede);
                 TelephonyManager telephonyManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
                 CellInfoWcdma cellinfowcdma = (CellInfoWcdma)telephonyManager.getAllCellInfo().get(0);
                 CellSignalStrengthWcdma cellSignalStrengthwcdma = cellinfowcdma.getCellSignalStrength();
+                networkTypeCode = telephonyManager.getNetworkType();
 
+                switch (networkTypeCode) {
+                    case TelephonyManager.NETWORK_TYPE_GPRS:
+                        netWorkType= "GPRS - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EDGE:
+                        netWorkType= "EDGE - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_CDMA:
+                        netWorkType= "CDMA - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_1xRTT:
+                        netWorkType= "1xRTT - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_IDEN:
+                        netWorkType= "IDEN - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_UMTS:
+                        netWorkType= "UMTS - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                        netWorkType= "EVDO_0 - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                        netWorkType= "EVDO_A - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_HSDPA:
+                        netWorkType= "HSDPA - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_HSUPA:
+                        netWorkType= "HSUPA - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_HSPA:
+                        netWorkType= "HSPA - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                        netWorkType= "EVDO_B - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EHRPD:
+                        netWorkType= "EHRPD - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_HSPAP:
+                        netWorkType= "HSPAP - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_LTE:
+                        netWorkType= "LTE - 4G";
+                        break;
+                    default:
+                        netWorkType= "Unknown";
+                }
+
+                String phoneType;
                 if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM){
                     GsmCellLocation gsmLocation = (GsmCellLocation)telephonyManager.getCellLocation();
-                    cid = gsmLocation.getCid();
-                    lac = gsmLocation.getLac();
+                    cid = "Cell ID (CID): " + gsmLocation.getCid();
+                    lac = "Location Area Code (LAC): " + gsmLocation.getLac();
+                    phoneType = " - GSM";
+                }else if(telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA){
+                    CdmaCellLocation cdmaCellLocation = (CdmaCellLocation) telephonyManager.getCellLocation();
+                    cid ="Id da base: " + cdmaCellLocation.getBaseStationId() + "Id da rede: "+cdmaCellLocation.getNetworkId();
+                    lac= "Latitude da base: " + cdmaCellLocation.getBaseStationLatitude() + " Longidutde da base:" + cdmaCellLocation.getBaseStationLongitude();
+                    phoneType = " - CDMA";
+                }else{
+                    cid="Desconhecido";
+                    lac="Desconhecido";
+                    phoneType=" - Desconhecido";
                 }
 
                 if (telephonyManager.getNetworkOperator() != null) {
@@ -115,9 +179,10 @@ public class PlaceholderFragment extends Fragment {
                 dbm = cellSignalStrengthwcdma.getDbm();
 
                 forcasinal.setText("Qualidade do sinal: " + torres + " traços. " + dbm + " dbm.");
-                operadoraview.setText("Operadora: "+ telephonyManager.getNetworkOperatorName());
-                cidview.setText("Cell ID (CID): " + cid );
-                lacview.setText("Location Area Code (LAC): " + lac );
+                operadoraview.setText("Operadora: "+ telephonyManager.getNetworkOperatorName() + phoneType);
+                netWork.setText("Tipo de rede: "+ netWorkType);
+                cidview.setText(cid);
+                lacview.setText(lac);
                 mccview.setText("Mobile Country Code (MCC): " + mcc);
                 mncview.setText("Mobile Network Code (MNC): " + mnc);
 
@@ -161,7 +226,7 @@ public class PlaceholderFragment extends Fragment {
                 Log.i("Chamada: ", "Localização do Google map alterada");
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
                         location.getLongitude()), 17);
-
+                mMap.animateCamera(cameraUpdate);
             }
         });
 

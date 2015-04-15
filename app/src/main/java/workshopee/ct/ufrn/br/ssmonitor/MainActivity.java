@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.telephony.CellInfoWcdma;
 import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.Menu;
@@ -34,13 +35,17 @@ public class MainActivity extends ActionBarActivity
     Criteria criteria;
     Location location;
 
-    int cid = 0;
-    int lac = 0;
+    int cid;
+    int lac;
+    int baseId, netWorkID;
+    double baseLat, baseLng;
     int mcc = 0;
     int mnc = 0;
-    int torres;
+    int torres, networkTypeCode;
     double dbm;
     String operadora, provider;
+    String phoneType, netWorkType;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +95,23 @@ public class MainActivity extends ActionBarActivity
                     GsmCellLocation gsmLocation = (GsmCellLocation)telephonyManager.getCellLocation();
                     cid = gsmLocation.getCid();
                     lac = gsmLocation.getLac();
+                    phoneType = " - GSM";
+                }else if(telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA){
+                    CdmaCellLocation cdmaCellLocation = (CdmaCellLocation) telephonyManager.getCellLocation();
+                    baseLat =cdmaCellLocation.getBaseStationLatitude();
+                    baseLng=cdmaCellLocation.getBaseStationLongitude();
+                    baseId = cdmaCellLocation.getBaseStationId();
+                    netWorkID =cdmaCellLocation.getNetworkId();
+                    phoneType = " - CDMA";
+                }else{
+                    cid=0;
+                    lac=0;
+                    phoneType=" - Desconhecido";
+                }
+
+                if (telephonyManager.getNetworkOperator() != null) {
+                    mcc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(0, 3));
+                    mnc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(3));
                 }
 
                 if (telephonyManager.getNetworkOperator() != null) {
@@ -98,6 +120,58 @@ public class MainActivity extends ActionBarActivity
                 }
                 torres = cellSignalStrengthwcdma.getLevel();
                 dbm = cellSignalStrengthwcdma.getDbm();
+
+                networkTypeCode = telephonyManager.getNetworkType();
+
+                switch (networkTypeCode) {
+                    case TelephonyManager.NETWORK_TYPE_GPRS:
+                        netWorkType= "GPRS - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EDGE:
+                        netWorkType= "EDGE - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_CDMA:
+                        netWorkType= "CDMA - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_1xRTT:
+                        netWorkType= "1xRTT - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_IDEN:
+                        netWorkType= "IDEN - 2G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_UMTS:
+                        netWorkType= "UMTS - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                        netWorkType= "EVDO_0 - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                        netWorkType= "EVDO_A - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_HSDPA:
+                        netWorkType= "HSDPA - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_HSUPA:
+                        netWorkType= "HSUPA - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_HSPA:
+                        netWorkType= "HSPA - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                        netWorkType= "EVDO_B - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_EHRPD:
+                        netWorkType= "EHRPD - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_HSPAP:
+                        netWorkType= "HSPAP - 3G";
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_LTE:
+                        netWorkType= "LTE - 4G";
+                        break;
+                    default:
+                        netWorkType= "Unknown";
+                }
 
                 //mensagem de Log.
                 Log.i("Called: ", "location changed. Lat: " + latitude + " lng: " + longitude);
