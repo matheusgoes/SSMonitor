@@ -65,7 +65,7 @@ public class MainActivity extends ActionBarActivity
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         locationmanager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
         provider = locationmanager.getBestProvider(criteria, true);
-        if (!locationmanager.getLastKnownLocation(provider).equals(null)){
+        if (locationmanager.getLastKnownLocation(provider)!= null){
             location= locationmanager.getLastKnownLocation(provider);
             latitude = location.getLatitude();
             longitude = location.getLongitude();
@@ -155,7 +155,6 @@ public class MainActivity extends ActionBarActivity
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
