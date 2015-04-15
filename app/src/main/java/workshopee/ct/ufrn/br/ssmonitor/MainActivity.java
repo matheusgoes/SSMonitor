@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -122,7 +124,8 @@ public class MainActivity extends ActionBarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            Toast.makeText(this ,"Atualzando!", Toast.LENGTH_SHORT).show();
             return true;
         }
 
@@ -131,13 +134,14 @@ public class MainActivity extends ActionBarActivity
 
       //A placeholder fragment containing a simple view.
 
-    public static class PlaceholderFragment extends Fragment implements LocationListener, OnMapReadyCallback{
+    public static class PlaceholderFragment extends Fragment implements LocationListener{
 
          // The fragment argument representing the section number for this
          //fragment.
 
         private static final String ARG_SECTION_NUMBER = "section_number";
         GoogleMap mMap;
+        double latitude, longitude;
 
          // Returns a new instance of this fragment for the given section
          //number.
@@ -163,7 +167,6 @@ public class MainActivity extends ActionBarActivity
 
             int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
             //Encontra latitude e longitude
-            double latitude, longitude;
             rootView = inflater.inflate(R.layout.fragment_monitor, container, false);
             Criteria criteria = new Criteria();
             Location location;
@@ -174,10 +177,12 @@ public class MainActivity extends ActionBarActivity
                 location= locationmanager.getLastKnownLocation(provider);
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
+                onLocationChanged(location);
             }else{
                 GPSTracker d=new GPSTracker(getActivity());
                 latitude = d.getLatitude();
                 longitude =d.getLongitude();
+                onLocationChanged(d.location);
             }
 
             switch (sectionNumber) {
@@ -219,7 +224,7 @@ public class MainActivity extends ActionBarActivity
                         torres = cellSignalStrengthwcdma.getLevel();
                         dbm = cellSignalStrengthwcdma.getDbm();
 
-                        forcasinal.setText("Força do sinal: " + torres + " traços. " + dbm + " dbm.");
+                        forcasinal.setText("Qualidade do sinal: " + torres + " traços. " + dbm + " dbm.");
                         operadoraview.setText("Operadora: "+ telephonyManager.getNetworkOperatorName());
                         cidview.setText("Cell ID (CID): " + cid );
                         lacview.setText("Location Area Code (LAC): " + lac );
@@ -230,15 +235,7 @@ public class MainActivity extends ActionBarActivity
                     case 2:
                         rootView = inflater.inflate(R.layout.activity_mapa, container, false);
 
-                        mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Estou aqui"));
-                        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                        //mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                        //mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-
-                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 10);
-                        mMap.animateCamera(cameraUpdate);
+                        marcarPosicao();
                         break;
                     case 3:
                         break;
@@ -257,12 +254,25 @@ public class MainActivity extends ActionBarActivity
 
         @Override
         public void onLocationChanged(Location location) {
-
+            Log.i("location changed", "location changed");
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
         }
 
-        @Override
-        public void onMapReady(GoogleMap map) {
+        public void marcarPosicao(){
+            mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
 
+            //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            //mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            //mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            mMap.setMyLocationEnabled(true);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17);
+            mMap.animateCamera(cameraUpdate);
+            /*mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(latitude, longitude))
+                    .title("Estou aqui")
+                    .snippet("Latitude "+latitude + " longitude " + longitude));*/
         }
     }
 }
