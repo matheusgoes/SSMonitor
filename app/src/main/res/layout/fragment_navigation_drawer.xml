@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:choiceMode="singleChoice"
-    android:divider="@android:color/holo_blue_bright"
+    android:divider="#19A3A3"
     android:dividerHeight="1dp"
     android:background="@color/material_blue_grey_900"
     android:textColor="@color/primary_material_dark"
