@@ -1,6 +1,7 @@
 package workshopee.ct.ufrn.br.ssmonitor;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -35,6 +36,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 
 public class MainActivity extends ActionBarActivity
@@ -254,7 +256,7 @@ public class MainActivity extends ActionBarActivity
 
         @Override
         public void onLocationChanged(Location location) {
-            Log.i("location changed", "location changed");
+            Log.i("Called", "location changed");
             latitude = location.getLatitude();
             longitude = location.getLongitude();
         }
@@ -269,6 +271,24 @@ public class MainActivity extends ActionBarActivity
             mMap.setMyLocationEnabled(true);
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17);
             mMap.animateCamera(cameraUpdate);
+            mMap.getUiSettings().setCompassEnabled(true);
+            mMap.getUiSettings().setAllGesturesEnabled(true);
+            Location myLocation = mMap.getMyLocation();
+            mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                @Override
+                public void onMyLocationChange(Location location) {
+                      Log.i("Chamada: ", "On my location change listener");
+                }
+            });
+
+
+            /*PolylineOptions options = new PolylineOptions();
+
+            options.color( Color.parseColor("#CC0000FF") );
+            options.width( 5 );
+            options.visible( true );
+            options.add(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));*/
+
             /*mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(latitude, longitude))
                     .title("Estou aqui")
