@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -25,8 +26,6 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -52,6 +51,7 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
     LocationManager locationmanager;
+    double latitude, longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,47 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        Criteria criteria = new Criteria();
+        Location location;
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        locationmanager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationmanager.getBestProvider(criteria, true);
+        if (!locationmanager.getLastKnownLocation(provider).equals(null)){
+            location= locationmanager.getLastKnownLocation(provider);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }else{
+            GPSTracker d=new GPSTracker(this);
+            latitude = d.getLatitude();
+            longitude =d.getLongitude();
+        }
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                latitude=location.getLatitude();
+                longitude=location.getLongitude();
+
+                Log.i("Called: ", "On create - Android location listener - location changed");
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        locationmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
     }
 
     @Override
@@ -134,9 +175,10 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-      //A placeholder fragment containing a simple view.
 
-    public static class PlaceholderFragment extends Fragment implements LocationListener{
+    //A placeholder fragment containing a simple view.
+
+    public static class PlaceholderFragment extends Fragment{
 
          // The fragment argument representing the section number for this
          //fragment.
@@ -179,13 +221,36 @@ public class MainActivity extends ActionBarActivity
                 location= locationmanager.getLastKnownLocation(provider);
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
-                onLocationChanged(location);
             }else{
                 GPSTracker d=new GPSTracker(getActivity());
                 latitude = d.getLatitude();
                 longitude =d.getLongitude();
-                onLocationChanged(d.location);
             }
+            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    latitude=location.getLatitude();
+                    longitude=location.getLongitude();
+
+                    Log.i("Called: ", "Android location listener - location changed");
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+            locationmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
             switch (sectionNumber) {
                     case 1:
@@ -254,13 +319,6 @@ public class MainActivity extends ActionBarActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
-        @Override
-        public void onLocationChanged(Location location) {
-            Log.i("Called", "location changed");
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-        }
-
         public void marcarPosicao(){
             mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
 
@@ -277,7 +335,10 @@ public class MainActivity extends ActionBarActivity
             mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
                 @Override
                 public void onMyLocationChange(Location location) {
-                      Log.i("Chamada: ", "On my location change listener");
+                      Log.i("Chamada: ", "Localização do Google map alterada");
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
+                                location.getLongitude()), 17);
+
                 }
             });
 
