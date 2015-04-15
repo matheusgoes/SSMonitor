@@ -14,8 +14,7 @@
         android:textStyle="bold"
         android:textColor="@color/bright_foreground_material_dark"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -26,9 +25,9 @@
         android:textStyle="italic"
         android:textSize="@dimen/abc_text_size_headline_material"
         android:id="@+id/textView"
-        android:layout_below="@+id/section_label"
+        android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="41dp" />
+        android:layout_marginTop="54dp" />
 
 
     <TextView android:text="Marcos Castro" android:layout_width="wrap_content"
@@ -45,7 +44,7 @@
         android:id="@+id/chrisostomo"
         android:textColor="@color/primary_material_light"
         android:textSize="@dimen/abc_text_size_title_material"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
     <TextView android:text="Matheus Goes" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,6 +52,27 @@
         android:textColor="@color/primary_material_light"
         android:layout_below="@+id/marcos"
         android:textSize="@dimen/abc_text_size_title_material"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="400px"
+        android:layout_height="400px"
+        android:id="@+id/imageView"
+        android:src="@drawable/icon"
+
+        android:layout_marginTop="54dp"
+        android:layout_below="@+id/section_label"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Signal Strength Monitor"
+        android:id="@+id/textView2"
+        android:textSize="@dimen/abc_text_size_headline_material"
+        android:textColor="@color/primary_material_light"
+        android:layout_below="@+id/section_label"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

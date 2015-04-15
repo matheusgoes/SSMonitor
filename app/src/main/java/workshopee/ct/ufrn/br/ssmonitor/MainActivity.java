@@ -87,7 +87,7 @@ public class MainActivity extends ActionBarActivity
                 latitude=location.getLatitude();
                 longitude=location.getLongitude();
 
-                Log.i("Called: ", "On create - Android location listener - location changed");
+                Log.i("Called: ", "location changed. Lat: " + latitude + " lng: " + longitude);
             }
 
             @Override
@@ -226,31 +226,6 @@ public class MainActivity extends ActionBarActivity
                 latitude = d.getLatitude();
                 longitude =d.getLongitude();
             }
-            LocationListener locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    latitude=location.getLatitude();
-                    longitude=location.getLongitude();
-
-                    Log.i("Called: ", "Android location listener - location changed");
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            };
-            locationmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
             switch (sectionNumber) {
                     case 1:
