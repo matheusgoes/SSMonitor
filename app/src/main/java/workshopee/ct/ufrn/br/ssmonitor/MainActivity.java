@@ -23,14 +23,8 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
     private CharSequence mTitle;
     LocationManager locationmanager;
     double latitude, longitude;
@@ -38,6 +32,8 @@ public class MainActivity extends ActionBarActivity
     CellInfoWcdma cellinfowcdma;
     TelephonyManager telephonyManager;
     Criteria criteria;
+    Location location;
+
     int cid = 0;
     int lac = 0;
     int mcc = 0;
@@ -61,7 +57,6 @@ public class MainActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         criteria = new Criteria();
-        Location location;
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         locationmanager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
         provider = locationmanager.getBestProvider(criteria, true);
@@ -80,9 +75,11 @@ public class MainActivity extends ActionBarActivity
         LocationListener locationListener = new LocationListener() {
 
             @Override
-            public void onLocationChanged(Location location) {
+            public void onLocationChanged(Location _location) {
+                //Obtem novos dados de localização
                 latitude=location.getLatitude();
                 longitude=location.getLongitude();
+                location = _location;
 
                 //Encontra dados de conexão
                 cellinfowcdma = (CellInfoWcdma)telephonyManager.getAllCellInfo().get(0);
@@ -102,7 +99,7 @@ public class MainActivity extends ActionBarActivity
                 torres = cellSignalStrengthwcdma.getLevel();
                 dbm = cellSignalStrengthwcdma.getDbm();
 
-
+                //mensagem de Log.
                 Log.i("Called: ", "location changed. Lat: " + latitude + " lng: " + longitude);
             }
 
