@@ -1,5 +1,7 @@
 package workshopee.ct.ufrn.br.ssmonitor;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -227,6 +229,7 @@ public class MainActivity extends ActionBarActivity
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#19A3A3")));
         actionBar.setTitle(mTitle);
     }
 
