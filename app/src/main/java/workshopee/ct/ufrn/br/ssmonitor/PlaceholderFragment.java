@@ -2,10 +2,14 @@ package workshopee.ct.ufrn.br.ssmonitor;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
@@ -18,6 +22,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,10 +36,16 @@ public class PlaceholderFragment extends Fragment {
 
     // The fragment argument representing the section number for this
     //fragment.
-
+    public static final int MAP_TYPE_NONE = 0;
+    public static final int MAP_TYPE_NORMAL = 1;
+    public static final int MAP_TYPE_SATELLITE = 2;
+    public static final int MAP_TYPE_TERRAIN = 3;
+    public static final int MAP_TYPE_HYBRID = 4;
     private static final String ARG_SECTION_NUMBER = "section_number";
     GoogleMap mMap;
-    double latitude, longitude;
+    static double latitude, longitude;
+    static int mapType=GoogleMap.MAP_TYPE_TERRAIN;
+
 
     // Returns a new instance of this fragment for the given section
     //number.
@@ -51,7 +64,7 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        MainActivity main = (MainActivity) getActivity();
+        final MainActivity main = (MainActivity) getActivity();
         View rootView;
 
         int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
@@ -92,10 +105,47 @@ public class PlaceholderFragment extends Fragment {
                 break;
             case 1000:
                 rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+                Spinner spinner = (Spinner) rootView.findViewById(R.id.spinnerMapas);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        switch (position) {
+                            case 0:
+                                mapType = MAP_TYPE_NORMAL;
+                                break;
+                            case 1:
+                                mapType = MAP_TYPE_SATELLITE;
+                                break;
+                            case 2:
+                                mapType = MAP_TYPE_TERRAIN;
+                                break;
+                            case 3:
+                                mapType = MAP_TYPE_HYBRID;
+                                break;
+                        }
+                        Log.i("MapType", "" + mapType);
+                    }
 
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        mapType = GoogleMap.MAP_TYPE_NORMAL;
+                    }
+                });
                 break;
             default:
                 rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                ImageView imageView = (ImageView) rootView.findViewById(R.id.logoInicio);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i("Image click", "Clicked");
+                        if (main.mNavigationDrawerFragment!=null){
+                            if (!main.mNavigationDrawerFragment.isDrawerOpen()) {
+                                main.mDrawerLayout.openDrawer(main.mydrawer);
+                            }
+                        }
+                    }
+                });
         }
         return rootView;
     }
@@ -109,9 +159,9 @@ public class PlaceholderFragment extends Fragment {
 
     public void marcarPosicao(){
         mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
-
         //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setMapType(mapType);
+        Log.i("MapType", ""+mMap.getMapType());
         //mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         //mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.setMyLocationEnabled(true);

@@ -25,5 +25,15 @@
     <string name="title_activity_splash_screen">Splash_screen</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_splash">Splash</string>
+    <string name="spinnerTipoMapaTerreno">Terreno</string>
+    <string name="spinnerTipoMapaSatelite">Satelite</string>
+    <string name="spinnerTipoMapaNormal">Normal</string>
+    <string name="spinnerTipoMapaHibrido">Hibrido</string>
+    <string name="tipoDeMapa">Tipo de Mapa</string>
+
+
+
+
+
 
 </resources>

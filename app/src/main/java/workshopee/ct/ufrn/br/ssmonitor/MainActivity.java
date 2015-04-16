@@ -34,10 +34,11 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private NavigationDrawerFragment mNavigationDrawerFragment;
-
-    private CharSequence mTitle;
+    NavigationDrawerFragment mNavigationDrawerFragment;
+    CharSequence mTitle;
+    DrawerLayout mydrawer;
     LocationManager locationmanager;
+    DrawerLayout mDrawerLayout;
     double latitude, longitude;
     CellInfoWcdma cellinfowcdma;
     CellSignalStrengthWcdma cellSignalStrengthwcdma;
@@ -50,6 +51,9 @@ public class MainActivity extends ActionBarActivity
     TelephonyManager telephonyManager;
     Criteria criteria;
     Location location;
+    ActionBar actionBar;
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    Menu _menu;
 
     int cid;
     int lac;
@@ -78,6 +82,8 @@ public class MainActivity extends ActionBarActivity
                     mNavigationDrawerFragment = (NavigationDrawerFragment)
                             getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
                     mTitle = getTitle();
+                    mDrawerLayout= mNavigationDrawerFragment.getmDrawerLayout();
+                    mydrawer = mNavigationDrawerFragment.mDrawerLayout;
 
                     // Configura menu de navegação
                     mNavigationDrawerFragment.setUp(
@@ -137,7 +143,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position))
                         .commit();
@@ -166,7 +172,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#19A3A3")));
         actionBar.setTitle(mTitle);
@@ -180,6 +186,7 @@ public class MainActivity extends ActionBarActivity
                 // Only show items in the action bar relevant to this screen
                 // if the drawer is not showing. Otherwise, let the drawer
                 // decide what to show in the action bar.
+                _menu = menu;
                 getMenuInflater().inflate(R.menu.main, menu);
                 restoreActionBar();
                 return true;
@@ -198,7 +205,7 @@ public class MainActivity extends ActionBarActivity
         //noinspection SimplifiableIfStatement
        switch (id){
         case R.id.action_settings:
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, PlaceholderFragment.newInstance(1000))
                     .commit();

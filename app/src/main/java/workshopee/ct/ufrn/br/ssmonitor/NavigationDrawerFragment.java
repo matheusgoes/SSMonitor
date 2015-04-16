@@ -52,7 +52,11 @@ public class NavigationDrawerFragment extends Fragment {
      */
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private DrawerLayout mDrawerLayout;
+    public DrawerLayout getmDrawerLayout() {
+        return mDrawerLayout;
+    }
+
+    DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
 
