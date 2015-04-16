@@ -90,6 +90,10 @@ public class PlaceholderFragment extends Fragment {
             case 4:
                 rootView = inflater.inflate(R.layout.fragment_sobre, container, false);
                 break;
+            case 1000:
+                rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+                break;
             default:
                 rootView = inflater.inflate(R.layout.fragment_main, container, false);
         }

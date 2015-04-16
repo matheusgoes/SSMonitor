@@ -198,7 +198,10 @@ public class MainActivity extends ActionBarActivity
         //noinspection SimplifiableIfStatement
        switch (id){
         case R.id.action_settings:
-            Toast.makeText(this ,"Config!", Toast.LENGTH_SHORT).show();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, PlaceholderFragment.newInstance(1000))
+                    .commit();
             return true;
            case R.id.action_close:
                this.onDestroy();

@@ -15,7 +15,7 @@
     <string name="marcos">Antônio Marcos</string>
     <string name="Chrisostomo">João Vitor Chrisóstomo</string>
     <string name="matheus">Matheus Góes</string>
-    <string name="action_settings">Config</string>
+    <string name="action_settings">Configurações</string>
     <string name="monitor">Monitor</string>
     <string name="forca">Força do sinal: </string>
     <string name="lat">Lat:  </string>
@@ -24,5 +24,6 @@
     <string name="title_activity_mapa">Map</string>
     <string name="title_activity_splash_screen">Splash_screen</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_splash">Splash</string>
 
 </resources>
