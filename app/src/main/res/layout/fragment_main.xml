@@ -32,7 +32,7 @@
         android:layout_width="400px"
         android:layout_height="400px"
         android:id="@+id/imageView"
-        android:src="@drawable/icon"
+        android:src="@drawable/ic_drawer"
         android:layout_below="@+id/appName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
