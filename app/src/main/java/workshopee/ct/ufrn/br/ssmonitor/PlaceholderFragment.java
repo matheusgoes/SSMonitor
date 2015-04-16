@@ -1,23 +1,9 @@
 package workshopee.ct.ufrn.br.ssmonitor;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.telephony.CellInfo;
-import android.telephony.CellInfoCdma;
-import android.telephony.CellInfoGsm;
-import android.telephony.CellInfoLte;
-import android.telephony.CellInfoWcdma;
-import android.telephony.TelephonyManager;
-import android.telephony.cdma.CdmaCellLocation;
-import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -140,7 +127,7 @@ public class PlaceholderFragment extends Fragment {
                     public void onClick(View v) {
                         if (main.mNavigationDrawerFragment!=null){
                             if (!main.mNavigationDrawerFragment.isDrawerOpen()) {
-                                main.drawerLayout.openDrawer(Gravity.LEFT);
+                                main.drawerLayout.openDrawer(Gravity.START);
                             }
                         }
                     }
@@ -193,38 +180,4 @@ public class PlaceholderFragment extends Fragment {
                     .snippet("Latitude "+latitude + " longitude " + longitude));*/
     }
 }
-
-
-//Encontra dados de conexão
-                            /*if (telephonyManager.getAllCellInfo() != null){
-                                if (telephonyManager.getAllCellInfo().get(0).getClass() == cellinfowcdma.getClass()) {
-                                    cellinfowcdma = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(0);
-                                    cellSignalStrengthwcdma = cellinfowcdma.getCellSignalStrength();
-                                    torres = cellSignalStrengthwcdma.getLevel();
-                                    dbm = cellSignalStrengthwcdma.getDbm();
-                                    Log.i("Cell Signal:", "tipo wcdma");
-                                    Toast.makeText(getApplicationContext() ,"WCDMA!", Toast.LENGTH_SHORT).show();
-                                }else if (telephonyManager.getAllCellInfo().get(0).getClass() == cellInfoCdma.getClass()){
-                                    cellInfoCdma = (CellInfoCdma) telephonyManager.getAllCellInfo().get(0);
-                                    cellSignalStrengthCdma = cellInfoCdma.getCellSignalStrength();
-                                    torres = cellSignalStrengthCdma.getLevel();
-                                    dbm = cellSignalStrengthCdma.getDbm();
-                                    Log.i("Cell Signal:", "tipo cdma");
-
-                                }else if (telephonyManager.getAllCellInfo().get(0).getClass() == cellInfoGsm.getClass()){
-                                    cellInfoGsm = (CellInfoGsm) telephonyManager.getAllCellInfo().get(0);
-                                    cellSignalStrengthGsm = cellInfoGsm.getCellSignalStrength();
-                                    torres = cellSignalStrengthGsm.getLevel();
-                                    dbm = cellSignalStrengthGsm.getDbm();
-                                    Log.i("Cell Signal:", "tipo gsm");
-
-                                }else if (telephonyManager.getAllCellInfo().get(0).getClass() == cellInfoLte.getClass()){
-                                    cellInfoLte = (CellInfoLte) telephonyManager.getAllCellInfo().get(0);
-                                    cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
-                                    torres = cellSignalStrengthLte.getLevel();
-                                    dbm = cellSignalStrengthLte.getDbm();
-                                    Log.i("Cell Signal:", "tipo lte");
-
-                                }
-                            }*/
 

@@ -1,22 +1,22 @@
 package workshopee.ct.ufrn.br.ssmonitor;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
-import android.telephony.CellSignalStrength;
 import android.telephony.CellSignalStrengthCdma;
 import android.telephony.CellSignalStrengthGsm;
 import android.telephony.CellSignalStrengthLte;
@@ -27,8 +27,6 @@ import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.widget.DrawerLayout;
-import android.view.View;
 import android.widget.Toast;
 
 
@@ -37,7 +35,6 @@ public class MainActivity extends ActionBarActivity
 
     NavigationDrawerFragment mNavigationDrawerFragment;
     CharSequence mTitle;
-    DrawerLayout mydrawer;
     LocationManager locationmanager;
     double latitude, longitude;
     CellSignalStrengthWcdma cellSignalStrengthwcdma;
@@ -223,7 +220,7 @@ public class MainActivity extends ActionBarActivity
         //Obtem novos dados de localização
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        String tipo="Desconhecido";
+        String tipo;
         try {
             CellInfo info = telephonyManager.getAllCellInfo().get(0);
                 if (info instanceof CellInfoGsm) {
@@ -247,7 +244,7 @@ public class MainActivity extends ActionBarActivity
                     dbm = cellSignalStrengthwcdma.getDbm();
                     tipo = "WCDMA";
                 } else {
-                    throw new Exception("Unknown type of cell signal!");
+                    tipo = "Desconhecido";
                 }
                 Log.i("Cell Info", "Tipo: "+ tipo + ". Torres: " + torres + ". DBM: "+ dbm);
             Toast.makeText(getApplicationContext() ,"Tipo: "+ tipo + " - Torres: " + torres + " - DBM: "+ dbm, Toast.LENGTH_SHORT).show();

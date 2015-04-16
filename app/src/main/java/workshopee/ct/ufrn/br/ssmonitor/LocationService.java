@@ -1,8 +1,8 @@
 package workshopee.ct.ufrn.br.ssmonitor;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 
 public class LocationService extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
