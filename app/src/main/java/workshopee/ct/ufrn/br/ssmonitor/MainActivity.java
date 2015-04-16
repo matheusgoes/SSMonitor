@@ -40,13 +40,9 @@ public class MainActivity extends ActionBarActivity
     DrawerLayout mydrawer;
     LocationManager locationmanager;
     double latitude, longitude;
-    CellInfoWcdma cellinfowcdma;
     CellSignalStrengthWcdma cellSignalStrengthwcdma;
-    CellInfoCdma cellInfoCdma;
     CellSignalStrengthCdma cellSignalStrengthCdma;
-    CellInfoGsm cellInfoGsm;
     CellSignalStrengthGsm cellSignalStrengthGsm;
-    CellInfoLte cellInfoLte;
     CellSignalStrengthLte cellSignalStrengthLte;
     TelephonyManager telephonyManager;
     Criteria criteria;
@@ -67,8 +63,6 @@ public class MainActivity extends ActionBarActivity
     String phoneType, netWorkType;
     DrawerLayout drawerLayout;
     int fragmentId;
-//    View fragmentContainerView = findViewById(R.id.navigation_drawer);
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,8 +144,6 @@ public class MainActivity extends ActionBarActivity
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position))
                         .commit();
-
-        Log.v("POSITION", "POSITION=" + position);
     }
 
     public void onSectionAttached(int number) {
@@ -231,10 +223,9 @@ public class MainActivity extends ActionBarActivity
         //Obtem novos dados de localização
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-
+        String tipo="Desconhecido";
         try {
-            for (final CellInfo info : telephonyManager.getAllCellInfo()) {
-                String tipo;
+            CellInfo info = telephonyManager.getAllCellInfo().get(0);
                 if (info instanceof CellInfoGsm) {
                     cellSignalStrengthGsm = ((CellInfoGsm) info).getCellSignalStrength();
                     torres = cellSignalStrengthGsm.getLevel();
@@ -259,22 +250,10 @@ public class MainActivity extends ActionBarActivity
                     throw new Exception("Unknown type of cell signal!");
                 }
                 Log.i("Cell Info", "Tipo: "+ tipo + ". Torres: " + torres + ". DBM: "+ dbm);
-                Toast.makeText(getApplicationContext() ,"Tipo: "+ tipo + " - Torres: " + torres + " - DBM: "+ dbm, Toast.LENGTH_SHORT).show();
-            }
-
+            Toast.makeText(getApplicationContext() ,"Tipo: "+ tipo + " - Torres: " + torres + " - DBM: "+ dbm, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e("Find cell signal: ", "Unable to obtain cell signal information", e);
         }
-
-        //Encontra dados de conexão
-                                    /*cellinfowcdma = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(0);
-                                    cellSignalStrengthwcdma = cellinfowcdma.getCellSignalStrength();
-                                    torres = cellSignalStrengthwcdma.getLevel();
-                                    dbm = cellSignalStrengthwcdma.getDbm();
-                                    Log.i("Cell Signal:", "tipo wcdma");
-                                    Toast.makeText(getApplicationContext() ,"WCDMA!", Toast.LENGTH_SHORT).show();*/
-
-
         operadora = telephonyManager.getNetworkOperatorName();
 
         if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM) {

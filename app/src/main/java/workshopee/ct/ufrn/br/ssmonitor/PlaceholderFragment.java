@@ -19,6 +19,7 @@ import android.telephony.TelephonyManager;
 import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +124,6 @@ public class PlaceholderFragment extends Fragment {
                                 mapType = MAP_TYPE_HYBRID;
                                 break;
                         }
-                        Log.i("MapType", "" + mapType);
                     }
 
                     @Override
@@ -138,10 +138,9 @@ public class PlaceholderFragment extends Fragment {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i("Image click", "Clicked");
                         if (main.mNavigationDrawerFragment!=null){
                             if (!main.mNavigationDrawerFragment.isDrawerOpen()) {
-                                main.drawerLayout.openDrawer(getActivity().findViewById(main.fragmentId));
+                                main.drawerLayout.openDrawer(Gravity.LEFT);
                             }
                         }
                     }
