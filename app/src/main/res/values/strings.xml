@@ -9,8 +9,7 @@
     <string name="title_section5">Sobre</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
-    <string name="action_refresh">Atualizar!</string>
+    <string name="action_close">Encerrar</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="bemvindo">Bem-vindo!</string>
     <string name="marcos">Antônio Marcos</string>
@@ -23,5 +22,7 @@
     <string name="lon">Lon:  </string>
     <string name="ver_mapa">Mapa</string>
     <string name="title_activity_mapa">Map</string>
+    <string name="title_activity_splash_screen">Splash_screen</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

@@ -39,6 +39,12 @@
             android:name=".Mapa"
             android:label="@string/title_activity_mapa" >
         </activity>
+
+        <service
+            android:name=".LocationService"
+            android:exported="false" >
+        </service>
+
     </application>
 
 </manifest>
