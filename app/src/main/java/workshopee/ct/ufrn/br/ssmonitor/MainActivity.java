@@ -52,145 +52,153 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
-
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        locationmanager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        provider = locationmanager.getBestProvider(criteria, true);
-        if (locationmanager.getLastKnownLocation(provider)!= null){
-            location= locationmanager.getLastKnownLocation(provider);
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-        }else{
-            GPSTracker d=new GPSTracker(this);
-            latitude = d.getLatitude();
-            longitude =d.getLongitude();
-        }
-
-        //Cria instancia de TelephonyManager e implementa o location listener
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        LocationListener locationListener = new LocationListener() {
+        if (telephonyManager.getSimState()==TelephonyManager.SIM_STATE_READY) {
+            setContentView(R.layout.activity_main);
 
-            @Override
-            public void onLocationChanged(Location _location) {
-                //Obtem novos dados de localização
-                latitude=location.getLatitude();
-                longitude=location.getLongitude();
-                location = _location;
+            mNavigationDrawerFragment = (NavigationDrawerFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+            mTitle = getTitle();
 
-                //Encontra dados de conexão
-                cellinfowcdma = (CellInfoWcdma)telephonyManager.getAllCellInfo().get(0);
-                cellSignalStrengthwcdma = cellinfowcdma.getCellSignalStrength();
-                operadora = telephonyManager.getNetworkOperatorName();
+            // Set up the drawer.
+            mNavigationDrawerFragment.setUp(
+                    R.id.navigation_drawer,
+                    (DrawerLayout) findViewById(R.id.drawer_layout));
 
-                if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM){
-                    GsmCellLocation gsmLocation = (GsmCellLocation)telephonyManager.getCellLocation();
-                    cid = gsmLocation.getCid();
-                    lac = gsmLocation.getLac();
-                    phoneType = " - GSM";
-                }else if(telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA){
-                    CdmaCellLocation cdmaCellLocation = (CdmaCellLocation) telephonyManager.getCellLocation();
-                    baseLat =cdmaCellLocation.getBaseStationLatitude();
-                    baseLng=cdmaCellLocation.getBaseStationLongitude();
-                    baseId = cdmaCellLocation.getBaseStationId();
-                    netWorkID =cdmaCellLocation.getNetworkId();
-                    phoneType = " - CDMA";
-                }else{
-                    cid=0;
-                    lac=0;
-                    phoneType=" - Desconhecido";
-                }
-
-                if (telephonyManager.getNetworkOperator() != null) {
-                    mcc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(0, 3));
-                    mnc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(3));
-                }
-
-                if (telephonyManager.getNetworkOperator() != null) {
-                    mcc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(0, 3));
-                    mnc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(3));
-                }
-                torres = cellSignalStrengthwcdma.getLevel();
-                dbm = cellSignalStrengthwcdma.getDbm();
-
-                networkTypeCode = telephonyManager.getNetworkType();
-
-                switch (networkTypeCode) {
-                    case TelephonyManager.NETWORK_TYPE_GPRS:
-                        netWorkType= "GPRS - 2G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_EDGE:
-                        netWorkType= "EDGE - 2G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_CDMA:
-                        netWorkType= "CDMA - 2G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_1xRTT:
-                        netWorkType= "1xRTT - 2G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_IDEN:
-                        netWorkType= "IDEN - 2G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_UMTS:
-                        netWorkType= "UMTS - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
-                        netWorkType= "EVDO_0 - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
-                        netWorkType= "EVDO_A - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_HSDPA:
-                        netWorkType= "HSDPA - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_HSUPA:
-                        netWorkType= "HSUPA - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_HSPA:
-                        netWorkType= "HSPA - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_EVDO_B:
-                        netWorkType= "EVDO_B - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_EHRPD:
-                        netWorkType= "EHRPD - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_HSPAP:
-                        netWorkType= "HSPAP - 3G";
-                        break;
-                    case TelephonyManager.NETWORK_TYPE_LTE:
-                        netWorkType= "LTE - 4G";
-                        break;
-                    default:
-                        netWorkType= "Unknown";
-                }
-                //mensagem de Log.
-                Log.i("Called: ", "location changed. Lat: " + latitude + " lng: " + longitude);
+            criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            provider = locationmanager.getBestProvider(criteria, true);
+            if (locationmanager.getLastKnownLocation(provider) != null) {
+                location = locationmanager.getLastKnownLocation(provider);
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            } else {
+                GPSTracker d = new GPSTracker(this);
+                latitude = d.getLatitude();
+                longitude = d.getLongitude();
             }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {  }
+            //Cria instancia de TelephonyManager e implementa o location listener
+            LocationListener locationListener = new LocationListener() {
 
-            @Override
-            public void onProviderEnabled(String provider) {  }
+                @Override
+                public void onLocationChanged(Location _location) {
+                    //Obtem novos dados de localização
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    location = _location;
 
-            @Override
-            public void onProviderDisabled(String provider) {  }
-        };
+                    //Encontra dados de conexão
+                    cellinfowcdma = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(0);
+                    cellSignalStrengthwcdma = cellinfowcdma.getCellSignalStrength();
+                    operadora = telephonyManager.getNetworkOperatorName();
 
-        //Define atualização de localização
-        locationmanager.requestLocationUpdates(provider, 0, 0, locationListener);
+                    if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM) {
+                        GsmCellLocation gsmLocation = (GsmCellLocation) telephonyManager.getCellLocation();
+                        cid = gsmLocation.getCid();
+                        lac = gsmLocation.getLac();
+                        phoneType = " - GSM";
+                    } else if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA) {
+                        CdmaCellLocation cdmaCellLocation = (CdmaCellLocation) telephonyManager.getCellLocation();
+                        baseLat = cdmaCellLocation.getBaseStationLatitude();
+                        baseLng = cdmaCellLocation.getBaseStationLongitude();
+                        baseId = cdmaCellLocation.getBaseStationId();
+                        netWorkID = cdmaCellLocation.getNetworkId();
+                        phoneType = " - CDMA";
+                    } else {
+                        cid = 0;
+                        lac = 0;
+                        phoneType = " - Desconhecido";
+                    }
 
+                    if (telephonyManager.getNetworkOperator() != null) {
+                        mcc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(0, 3));
+                        mnc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(3));
+                    }
+
+                    if (telephonyManager.getNetworkOperator() != null) {
+                        mcc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(0, 3));
+                        mnc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(3));
+                    }
+                    torres = cellSignalStrengthwcdma.getLevel();
+                    dbm = cellSignalStrengthwcdma.getDbm();
+
+                    networkTypeCode = telephonyManager.getNetworkType();
+
+                    switch (networkTypeCode) {
+                        case TelephonyManager.NETWORK_TYPE_GPRS:
+                            netWorkType = "GPRS - 2G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_EDGE:
+                            netWorkType = "EDGE - 2G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_CDMA:
+                            netWorkType = "CDMA - 2G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_1xRTT:
+                            netWorkType = "1xRTT - 2G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_IDEN:
+                            netWorkType = "IDEN - 2G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_UMTS:
+                            netWorkType = "UMTS - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                            netWorkType = "EVDO_0 - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                            netWorkType = "EVDO_A - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_HSDPA:
+                            netWorkType = "HSDPA - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_HSUPA:
+                            netWorkType = "HSUPA - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_HSPA:
+                            netWorkType = "HSPA - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                            netWorkType = "EVDO_B - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_EHRPD:
+                            netWorkType = "EHRPD - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_HSPAP:
+                            netWorkType = "HSPAP - 3G";
+                            break;
+                        case TelephonyManager.NETWORK_TYPE_LTE:
+                            netWorkType = "LTE - 4G";
+                            break;
+                        default:
+                            netWorkType = "Unknown";
+                    }
+                    //mensagem de Log.
+                    Log.i("Called: ", "location changed. Lat: " + latitude + " lng: " + longitude);
+                    Toast.makeText(getApplicationContext() ,"Location Changed!", Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                }
+            };
+
+            //Define atualização de localização
+            locationmanager.requestLocationUpdates(provider, 1000, 1, locationListener);
+        }else{
+            setContentView(R.layout.semsim);
+        }
     }
 
     @Override
