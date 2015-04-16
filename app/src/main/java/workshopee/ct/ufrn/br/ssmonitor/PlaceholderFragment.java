@@ -141,7 +141,7 @@ public class PlaceholderFragment extends Fragment {
                         Log.i("Image click", "Clicked");
                         if (main.mNavigationDrawerFragment!=null){
                             if (!main.mNavigationDrawerFragment.isDrawerOpen()) {
-                                main.mDrawerLayout.openDrawer(main.mydrawer);
+                                main.drawerLayout.openDrawer(getActivity().findViewById(main.fragmentId));
                             }
                         }
                     }

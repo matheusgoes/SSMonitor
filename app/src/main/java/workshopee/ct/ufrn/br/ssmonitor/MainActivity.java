@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
 import android.widget.Toast;
 
 
@@ -38,7 +39,6 @@ public class MainActivity extends ActionBarActivity
     CharSequence mTitle;
     DrawerLayout mydrawer;
     LocationManager locationmanager;
-    DrawerLayout mDrawerLayout;
     double latitude, longitude;
     CellInfoWcdma cellinfowcdma;
     CellSignalStrengthWcdma cellSignalStrengthwcdma;
@@ -65,6 +65,9 @@ public class MainActivity extends ActionBarActivity
     double dbm;
     String operadora, provider;
     String phoneType, netWorkType;
+    DrawerLayout drawerLayout;
+    int fragmentId;
+//    View fragmentContainerView = findViewById(R.id.navigation_drawer);
 
 
     @Override
@@ -82,13 +85,13 @@ public class MainActivity extends ActionBarActivity
                     mNavigationDrawerFragment = (NavigationDrawerFragment)
                             getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
                     mTitle = getTitle();
-                    mDrawerLayout= mNavigationDrawerFragment.getmDrawerLayout();
-                    mydrawer = mNavigationDrawerFragment.mDrawerLayout;
 
+                    fragmentId = R.id.navigation_drawer;
+                    drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                     // Configura menu de navegação
                     mNavigationDrawerFragment.setUp(
-                            R.id.navigation_drawer,
-                            (DrawerLayout) findViewById(R.id.drawer_layout));
+                            fragmentId,
+                            drawerLayout);
 
 
                     //Inicializa Localização
