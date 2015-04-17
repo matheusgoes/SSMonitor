@@ -18,10 +18,10 @@
         android:layout_marginBottom="89dp" />
 
     <ImageView
-        android:layout_width="400px"
-        android:layout_height="400px"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:id="@+id/imageView"
-        android:src="@drawable/ic_drawer"
+        android:src="@drawable/ic_grande"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="102dp" />

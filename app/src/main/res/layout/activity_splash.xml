@@ -11,7 +11,6 @@
         android:layout_height="fill_parent"
         android:id="@+id/imageView"
         android:src="@drawable/ic_grande"
-        android:layout_below="@+id/appName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
 

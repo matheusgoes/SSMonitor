@@ -43,7 +43,6 @@ public class MainActivity extends ActionBarActivity
     CharSequence mTitle;
     Notification n;
     LocationManager locationmanager;
-    double latitude, longitude;
     CellSignalStrengthWcdma cellSignalStrengthwcdma;
     CellSignalStrengthCdma cellSignalStrengthCdma;
     CellSignalStrengthGsm cellSignalStrengthGsm;
@@ -52,27 +51,27 @@ public class MainActivity extends ActionBarActivity
     Criteria criteria;
     Location location;
     ActionBar actionBar;
-    FragmentManager fragmentManager = getSupportFragmentManager();
+    FragmentManager fragmentManager;
     NotificationManager mNotificationManager;
     LocationListener locationListener;
     GPSTracker gpsTracker;
+    DrawerLayout drawerLayout;
+    Bundle bundle;
     Menu _menu;
-    boolean finish = false;
-
 
     int cid;
     int lac;
     int baseId, netWorkID;
-    double baseLat, baseLng;
+    int fragmentId;
     int mcc = 0;
     int mnc = 0;
     int torres = 0, networkTypeCode;
     double dbm;
+    double latitude, longitude;
+    double baseLat, baseLng;
     String operadora, provider;
     String phoneType, netWorkType;
-    DrawerLayout drawerLayout;
-    int fragmentId;
-    Bundle bundle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +81,6 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         bundle = savedInstanceState;
 
-        finish = false;
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -227,7 +225,6 @@ public class MainActivity extends ActionBarActivity
                         .commit();
                 return true;
             case R.id.action_close:
-                finish = true;
                 quit();
                 return true;
         }

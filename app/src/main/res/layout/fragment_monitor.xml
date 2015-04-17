@@ -32,7 +32,6 @@
             android:text="Operadora"
             android:id="@+id/operadora"
             android:layout_below="@+id/forca"
-            android:layout_alignLeft="@+id/forca"
             android:layout_alignStart="@+id/forca"
             android:textColor="#ff3c85ff"
             android:textSize="@dimen/abc_text_size_large_material"/>
@@ -45,7 +44,7 @@
             android:textColor="#ff3c8500"
             android:layout_below="@id/operadora"
             android:textSize="@dimen/abc_text_size_large_material"
-            android:layout_alignLeft="@+id/operadora"/>
+            android:layout_alignStart="@+id/operadora"/>
 
 
         <TextView
@@ -68,7 +67,7 @@
             android:id="@+id/lac"
             android:textColor="@color/primary_material_light"
             android:layout_below="@+id/cid"
-            android:layout_alignLeft="@+id/forca"
+            android:layout_alignStart="@+id/forca"
             android:textSize="@dimen/abc_text_size_large_material"
             />
 
@@ -79,7 +78,7 @@
             android:text="MCC"
             android:id="@+id/mcc"
             android:textColor="@color/primary_material_light"
-            android:layout_alignLeft="@+id/forca"
+            android:layout_alignStart="@+id/forca"
             android:textSize="@dimen/abc_text_size_large_material"
             android:layout_below="@+id/lac"/>
 
@@ -90,7 +89,7 @@
             android:text="MNC"
             android:id="@+id/mnc"
             android:textColor="@color/primary_material_light"
-            android:layout_alignLeft="@+id/forca"
+            android:layout_alignStart="@+id/forca"
             android:textSize="@dimen/abc_text_size_large_material"
             android:layout_below="@+id/mcc"/>
 
@@ -101,7 +100,7 @@
             android:text="latitude"
             android:id="@+id/lat"
             android:textColor="@color/primary_material_light"
-            android:layout_alignLeft="@+id/forca"
+            android:layout_alignStart="@+id/forca"
             android:textSize="@dimen/abc_text_size_large_material"
             android:layout_below="@+id/mnc"
             />
@@ -115,7 +114,7 @@
             android:textColor="@color/primary_material_light"
             android:textSize="@dimen/abc_text_size_large_material"
             android:layout_below="@+id/lat"
-            android:layout_alignLeft="@+id/forca"
+            android:layout_alignStart="@+id/forca"
             />
 
     </RelativeLayout>
