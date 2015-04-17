@@ -20,7 +20,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/primary_material_light"
         android:text="Este aplicativo tem o objetivo de obter dados de localização e qualidade do sinal, armazená-los em banco de dados e apresentá-los em forma de gráfico ou heat-map, além de gerar relatório. Dessas formas pode ser avaliada a qualidade do sinal de uma região."
-        android:textSize="@dimen/abc_text_size_headline_material"
+        android:textSize="@dimen/abc_text_size_large_material"
         android:id="@+id/textView"
         android:layout_below="@+id/sobre"
         android:gravity="center"

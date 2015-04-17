@@ -265,7 +265,7 @@ public class MainActivity extends ActionBarActivity
 
         n  = new Notification.Builder(this)
                 .setContentTitle("Ainda estamos aqui!")
-                .setContentText("Estamos obtendo dados em segundo plano.")
+                .setContentText("Clique para encerrar")
                 .setSmallIcon(R.drawable.ic_notif)
                 .setContentIntent(pIntent)
                 .setAutoCancel(true)
