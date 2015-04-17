@@ -29,10 +29,10 @@
         android:layout_marginTop="40dp" />
 
     <ImageView
-        android:layout_width="400px"
-        android:layout_height="400px"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:id="@+id/logoInicio"
-        android:src="@drawable/ic_drawer"
+        android:src="@drawable/ic_grande"
         android:layout_below="@+id/appName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
