@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 
 public class Splash extends ActionBarActivity {
-    private static final long SPLASH_DISPLAY_LENGTH = 5000;
+    private static final long SPLASH_DISPLAY_LENGTH = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
