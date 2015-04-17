@@ -1,6 +1,10 @@
 package workshopee.ct.ufrn.br.ssmonitor;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
@@ -33,8 +37,11 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
+    final static String QUIT = "quit";
+
     NavigationDrawerFragment mNavigationDrawerFragment;
     CharSequence mTitle;
+    Notification n;
     LocationManager locationmanager;
     double latitude, longitude;
     CellSignalStrengthWcdma cellSignalStrengthwcdma;
@@ -46,7 +53,12 @@ public class MainActivity extends ActionBarActivity
     Location location;
     ActionBar actionBar;
     FragmentManager fragmentManager = getSupportFragmentManager();
+    NotificationManager mNotificationManager;
+    LocationListener locationListener;
+    GPSTracker gpsTracker;
     Menu _menu;
+    boolean finish = false;
+
 
     int cid;
     int lac;
@@ -60,16 +72,24 @@ public class MainActivity extends ActionBarActivity
     String phoneType, netWorkType;
     DrawerLayout drawerLayout;
     int fragmentId;
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (n != null)
+            mNotificationManager.cancelAll();
 
-        if (telephonyManager!=null){
-            if (telephonyManager.getSimState()==TelephonyManager.SIM_STATE_READY) {
+        super.onCreate(savedInstanceState);
+        bundle = savedInstanceState;
+
+        finish = false;
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_READY) {
                 locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if ((locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationmanager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))){
+                if ((locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationmanager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
                     setContentView(R.layout.activity_main);
 
                     //Cria menu de navegação
@@ -89,32 +109,35 @@ public class MainActivity extends ActionBarActivity
                     criteria = new Criteria();
                     criteria.setAccuracy(Criteria.ACCURACY_FINE);
                     provider = locationmanager.getBestProvider(criteria, true);
-                    if (locationmanager.getLastKnownLocation(provider)!=null){
+                    if (locationmanager.getLastKnownLocation(provider) != null) {
                         location = locationmanager.getLastKnownLocation(provider);
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
-                    }else{
-                        GPSTracker gpsTracker = new GPSTracker(this);
+                    } else {
+                        gpsTracker = new GPSTracker(this);
                         location = gpsTracker.getLocation();
                         latitude = gpsTracker.getLatitude();
-                        longitude= gpsTracker.getLongitude();
+                        longitude = gpsTracker.getLongitude();
                     }
 
                     getInfo();
 
 
                     //Cria instancia de TelephonyManager e implementa o location listener
-                    LocationListener locationListener = new LocationListener() {
+                    locationListener = new LocationListener() {
                         @Override
                         public void onLocationChanged(Location _location) {
                             getInfo();
                         }
+
                         @Override
                         public void onStatusChanged(String provider, int status, Bundle extras) {
                         }
+
                         @Override
                         public void onProviderEnabled(String provider) {
                         }
+
                         @Override
                         public void onProviderDisabled(String provider) {
                         }
@@ -122,14 +145,13 @@ public class MainActivity extends ActionBarActivity
 
                     //Define atualização de localização
                     locationmanager.requestLocationUpdates(provider, 1000, 1, locationListener);
-
-                }else{
+                } else {
                     setContentView(R.layout.activity_location_services_off);
                 }
-            }else{
+            } else {
                 setContentView(R.layout.semsim);
             }
-        }else{
+        } else {
             setContentView(R.layout.semsim);
         }
     }
@@ -138,10 +160,12 @@ public class MainActivity extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, PlaceholderFragment.newInstance(position))
-                        .commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, PlaceholderFragment.newInstance(position))
+                .commit();
     }
+
+
 
     public void onSectionAttached(int number) {
         switch (number) {
@@ -195,16 +219,17 @@ public class MainActivity extends ActionBarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       switch (id){
-        case R.id.action_settings:
-            fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(1000))
-                    .commit();
-            return true;
-           case R.id.action_close:
-               this.onDestroy();
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(1000))
+                        .commit();
+                return true;
+            case R.id.action_close:
+                finish = true;
+                quit();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -213,7 +238,44 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mNotificationManager.cancelAll();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction("quit");
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        n  = new Notification.Builder(this)
+                .setContentTitle("Ainda estamos aqui!")
+                .setContentText("Estamos obtendo dados em segundo plano.")
+                .setSmallIcon(R.drawable.ic_drawer)
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                    /*.addAction(R.drawable.abc_ic_clear_mtrl_alpha, "Finalizar", pIntent)*/.build();
+
+        mNotificationManager.notify(0, n);
+    }
+
+    public void quit(){
+        if (locationmanager!=null){
+            locationmanager.removeUpdates(locationListener);
+            Log.i("App"," Updates removed.");
+        }
+        if (n != null){
+            mNotificationManager.cancel(0);
+            Log.i("App"," Notification canceled");
+
+        }
+        gpsTracker = null;
+        locationmanager=null;
+        location = null;
+        telephonyManager = null;
         finish();
+        Log.i("App"," FINISHING");
     }
 
     public void getInfo(){
@@ -223,30 +285,30 @@ public class MainActivity extends ActionBarActivity
         String tipo;
         try {
             CellInfo info = telephonyManager.getAllCellInfo().get(0);
-                if (info instanceof CellInfoGsm) {
-                    cellSignalStrengthGsm = ((CellInfoGsm) info).getCellSignalStrength();
-                    torres = cellSignalStrengthGsm.getLevel();
-                    dbm = cellSignalStrengthGsm.getDbm();
-                    tipo = "GSM";
-                } else if (info instanceof CellInfoCdma) {
-                    cellSignalStrengthCdma = ((CellInfoCdma) info).getCellSignalStrength();
-                    torres = cellSignalStrengthCdma.getLevel();
-                    dbm = cellSignalStrengthCdma.getDbm();
-                    tipo = "CDMA";
-                } else if (info instanceof CellInfoLte) {
-                    cellSignalStrengthLte = ((CellInfoLte) info).getCellSignalStrength();
-                    torres = cellSignalStrengthLte.getLevel();
-                    dbm = cellSignalStrengthLte.getDbm();
-                    tipo = "LTE";
-                }else if (info instanceof CellInfoWcdma){
-                    cellSignalStrengthwcdma= ((CellInfoWcdma) info).getCellSignalStrength();
-                    torres = cellSignalStrengthwcdma.getLevel();
-                    dbm = cellSignalStrengthwcdma.getDbm();
-                    tipo = "WCDMA";
-                } else {
-                    tipo = "Desconhecido";
-                }
-                Log.i("Cell Info", "Tipo: "+ tipo + ". Torres: " + torres + ". DBM: "+ dbm);
+            if (info instanceof CellInfoGsm) {
+                cellSignalStrengthGsm = ((CellInfoGsm) info).getCellSignalStrength();
+                torres = cellSignalStrengthGsm.getLevel();
+                dbm = cellSignalStrengthGsm.getDbm();
+                tipo = "GSM";
+            } else if (info instanceof CellInfoCdma) {
+                cellSignalStrengthCdma = ((CellInfoCdma) info).getCellSignalStrength();
+                torres = cellSignalStrengthCdma.getLevel();
+                dbm = cellSignalStrengthCdma.getDbm();
+                tipo = "CDMA";
+            } else if (info instanceof CellInfoLte) {
+                cellSignalStrengthLte = ((CellInfoLte) info).getCellSignalStrength();
+                torres = cellSignalStrengthLte.getLevel();
+                dbm = cellSignalStrengthLte.getDbm();
+                tipo = "LTE";
+            }else if (info instanceof CellInfoWcdma){
+                cellSignalStrengthwcdma= ((CellInfoWcdma) info).getCellSignalStrength();
+                torres = cellSignalStrengthwcdma.getLevel();
+                dbm = cellSignalStrengthwcdma.getDbm();
+                tipo = "WCDMA";
+            } else {
+                tipo = "Desconhecido";
+            }
+            Log.i("Cell Info", "Tipo: "+ tipo + ". Torres: " + torres + ". DBM: "+ dbm);
             Toast.makeText(getApplicationContext() ,"Tipo: "+ tipo + " - Torres: " + torres + " - DBM: "+ dbm, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e("Find cell signal: ", "Unable to obtain cell signal information", e);
