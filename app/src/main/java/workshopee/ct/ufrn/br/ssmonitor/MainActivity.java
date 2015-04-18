@@ -71,6 +71,7 @@ public class MainActivity extends ActionBarActivity
     double baseLat, baseLng;
     String operadora, provider;
     String phoneType, netWorkType;
+    boolean notifications_actived = true;
 
 
     @Override
@@ -258,20 +259,22 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onStop() {
         super.onStop();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setAction(QUIT);
-        Log.i("OnStop()", "Intent action: " + intent.getAction());
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        if (notifications_actived){
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setAction(QUIT);
+            Log.i("OnStop()", "Intent action: " + intent.getAction());
+            PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        n  = new Notification.Builder(this)
-                .setContentTitle("Ainda estamos aqui!")
-                .setContentText("Clique para encerrar")
-                .setSmallIcon(R.drawable.ic_notif)
-                .setContentIntent(pIntent)
-                .setAutoCancel(true)
-                .addAction(R.drawable.abc_ic_clear_mtrl_alpha, "Finalizar", pIntent).build();
+            n  = new Notification.Builder(this)
+                    .setContentTitle("Ainda estamos aqui!")
+                    .setContentText("Clique para encerrar")
+                    .setSmallIcon(R.drawable.ic_notif)
+                    .setContentIntent(pIntent)
+                    .setAutoCancel(true)
+                    .addAction(R.drawable.abc_ic_clear_mtrl_alpha, "Finalizar", pIntent).build();
 
-        mNotificationManager.notify(0, n);
+            mNotificationManager.notify(0, n);
+        }
     }
 
     public void quit(){

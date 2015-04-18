@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -94,6 +96,9 @@ public class PlaceholderFragment extends Fragment {
             case 1000:
                 rootView = inflater.inflate(R.layout.fragment_settings, container, false);
                 Spinner spinner = (Spinner) rootView.findViewById(R.id.spinnerMapas);
+                spinner.setSelection(mapType-1);
+                final Switch mSwitch = (Switch) rootView.findViewById(R.id.ativarNotificacoesSwitch);
+                mSwitch.setChecked(main.notifications_actived);
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -118,6 +123,13 @@ public class PlaceholderFragment extends Fragment {
                         mapType = GoogleMap.MAP_TYPE_NORMAL;
                     }
                 });
+                mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        main.notifications_actived = isChecked;
+                    }
+                });
+
                 break;
             default:
                 rootView = inflater.inflate(R.layout.fragment_main, container, false);
