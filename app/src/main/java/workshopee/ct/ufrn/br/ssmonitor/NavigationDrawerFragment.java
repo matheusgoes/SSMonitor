@@ -58,6 +58,7 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    MainActivity activity;
 
     public NavigationDrawerFragment() {
     }
@@ -123,9 +124,10 @@ public class NavigationDrawerFragment extends Fragment {
      * @param fragmentId   The android:id of this fragment in its activity's layout.
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
-    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+    public void setUp(int fragmentId, DrawerLayout drawerLayout, MainActivity activity) {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
+        this.activity = activity;
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -253,10 +255,20 @@ public class NavigationDrawerFragment extends Fragment {
             return true;
         }
 
-        /*if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
-            return true;
-        }*/
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch (id){
+            case R.id.action_settings:
+                activity.fragmentManager = activity.getSupportFragmentManager();
+                activity.fragmentManager.beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(1000))
+                        .commit();
+                return true;
+            case R.id.action_close:
+                activity.quit();
+                return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

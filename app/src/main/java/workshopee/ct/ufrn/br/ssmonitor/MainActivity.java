@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity
                     // Configura menu de navegação
                     mNavigationDrawerFragment.setUp(
                             fragmentId,
-                            drawerLayout);
+                            drawerLayout, this);
 
 
                     //Inicializa Localização
