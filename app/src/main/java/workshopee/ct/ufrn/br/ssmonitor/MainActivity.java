@@ -327,9 +327,12 @@ public class MainActivity extends ActionBarActivity
             }
             Log.i("Cell Info", "Tipo: "+ tipo + ". Torres: " + torres + ". DBM: "+ dbm);
             Toast.makeText(getApplicationContext() ,"Tipo: "+ tipo + " - Torres: " + torres + " - DBM: "+ dbm, Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.e("Find cell signal: ", "Unable to obtain cell signal information", e);
+        }catch (Exception e) {
+            Log.e("CELL INFO: ", "Unable to obtain cell signal information", e);
         }
+
+
+
         operadora = telephonyManager.getNetworkOperatorName();
 
         if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM) {

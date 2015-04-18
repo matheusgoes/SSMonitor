@@ -94,6 +94,7 @@ public class PlaceholderFragment extends Fragment {
                 rootView = inflater.inflate(R.layout.fragment_sobre, container, false);
                 break;
             case 1000:
+                main.getSupportActionBar().setTitle("Configurações");
                 rootView = inflater.inflate(R.layout.fragment_settings, container, false);
                 Spinner spinner = (Spinner) rootView.findViewById(R.id.spinnerMapas);
                 spinner.setSelection(mapType-1);
