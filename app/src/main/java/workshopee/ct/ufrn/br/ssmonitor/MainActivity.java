@@ -43,17 +43,16 @@ public class MainActivity extends ActionBarActivity
         //PHONE
         int mcc = 0, mnc = 0;
         int torres = 0, networkTypeCode;
-        double dbm;
+        double dbm, latitude, longitude;
         String phoneType, operadora;
+        String netWorkType;
         //TABELA PHONE_TYPE_CDMA
         int baseId, netWorkID;
         double baseLat, baseLng;
-        String netWorkType;
+        //Aqui tem PhoneType
         //Tabela PHONE_TYPE_GSM
         int cid, lac;
-        //Aqui tem NetworkType tambem
-        // TABELA LOCATION
-        double latitude, longitude;
+        //Aqui tem PhoneType
     // }FIM
 
     NavigationDrawerFragment mNavigationDrawerFragment;
@@ -344,18 +343,18 @@ public class MainActivity extends ActionBarActivity
             GsmCellLocation gsmLocation = (GsmCellLocation) telephonyManager.getCellLocation();
             cid = gsmLocation.getCid();
             lac = gsmLocation.getLac();
-            phoneType = " - GSM";
+            phoneType = "GSM";
         } else if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA) {
             CdmaCellLocation cdmaCellLocation = (CdmaCellLocation) telephonyManager.getCellLocation();
             baseLat = cdmaCellLocation.getBaseStationLatitude();
             baseLng = cdmaCellLocation.getBaseStationLongitude();
             baseId = cdmaCellLocation.getBaseStationId();
             netWorkID = cdmaCellLocation.getNetworkId();
-            phoneType = " - CDMA";
+            phoneType = "CDMA";
         } else {
             cid = 0;
             lac = 0;
-            phoneType = " - Desconhecido";
+            phoneType = "Desconhecido";
         }
 
         if (telephonyManager.getNetworkOperator() != null) {
