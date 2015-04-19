@@ -39,6 +39,22 @@ public class MainActivity extends ActionBarActivity
 
     final static String QUIT = "quit";
 
+    // VARIAVEIS PARA BANCO DE DADOS {
+        //Tabela CELL_TYPE_GSM
+        int cid, lac; //GSM
+        //CELL
+        int mcc = 0, mnc = 0;
+        int torres = 0, networkTypeCode;
+        double dbm;
+        String netWorkType, operadora;
+        String phoneType;
+        //CELL CEll_TYPE_CDMA
+        int baseId, netWorkID;
+        double baseLat, baseLng;
+        //LOCATION
+        double latitude, longitude;
+    // }FIM
+
     NavigationDrawerFragment mNavigationDrawerFragment;
     CharSequence mTitle;
     Notification n;
@@ -58,21 +74,9 @@ public class MainActivity extends ActionBarActivity
     DrawerLayout drawerLayout;
     Bundle bundle;
     Menu _menu;
-
-    int cid;
-    int lac;
-    int baseId, netWorkID;
-    int fragmentId;
-    int mcc = 0;
-    int mnc = 0;
-    int torres = 0, networkTypeCode;
-    double dbm;
-    double latitude, longitude;
-    double baseLat, baseLng;
-    String operadora, provider;
-    String phoneType, netWorkType;
+    String provider;
     boolean notifications_actived = true;
-
+    int fragmentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
