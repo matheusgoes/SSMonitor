@@ -44,14 +44,14 @@ public class MainActivity extends ActionBarActivity
         int mcc = 0, mnc = 0;
         int torres = 0, networkTypeCode;
         double dbm;
-        String netWorkType, operadora;
+        String phoneType, operadora;
         //TABELA PHONE_TYPE_CDMA
         int baseId, netWorkID;
         double baseLat, baseLng;
-        String phoneType;
+        String netWorkType;
         //Tabela PHONE_TYPE_GSM
         int cid, lac;
-        //Aqui tem PhoneType tambem
+        //Aqui tem NetworkType tambem
         // TABELA LOCATION
         double latitude, longitude;
     // }FIM
