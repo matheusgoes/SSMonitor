@@ -40,18 +40,19 @@ public class MainActivity extends ActionBarActivity
     final static String QUIT = "quit";
 
     // VARIAVEIS PARA BANCO DE DADOS {
-        //Tabela CELL_TYPE_GSM
-        int cid, lac; //GSM
-        //CELL
+        //PHONE
         int mcc = 0, mnc = 0;
         int torres = 0, networkTypeCode;
         double dbm;
         String netWorkType, operadora;
-        String phoneType;
-        //CELL CEll_TYPE_CDMA
+        //TABELA PHONE_TYPE_CDMA
         int baseId, netWorkID;
         double baseLat, baseLng;
-        //LOCATION
+        String phoneType;
+        //Tabela PHONE_TYPE_GSM
+        int cid, lac;
+        //Aqui tem PhoneType tambem
+        // TABELA LOCATION
         double latitude, longitude;
     // }FIM
 
