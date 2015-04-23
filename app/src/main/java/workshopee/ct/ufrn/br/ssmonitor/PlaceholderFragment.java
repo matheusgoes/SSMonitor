@@ -2,10 +2,8 @@ package workshopee.ct.ufrn.br.ssmonitor;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -29,11 +26,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.util.List;
@@ -125,8 +119,9 @@ public class PlaceholderFragment extends Fragment {
                         options = new CircleOptions().
                                 center(new LatLng(listMap.get(i).getLatitude(),listMap.get(i).getLongitude()))
                                 .fillColor(cor)
-                                .radius(10.0)
-                                .strokeWidth(0);
+                                .radius(5.0)
+                                .strokeWidth(5)
+                                .strokeColor(Color.TRANSPARENT);
                         mMap.addCircle(options);
                         Log.i("Circulo", "desenhando");
                         anterior.setLatitude(atual.getLatitude());
