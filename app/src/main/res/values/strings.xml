@@ -6,7 +6,8 @@
     <string name="title_section2">Monitor</string>
     <string name="title_section3">Mapa</string>
     <string name="title_section4">Gráficos</string>
-    <string name="title_section5">Sobre</string>
+    <string name="title_section5">Listar leituras</string>
+    <string name="title_section6">Sobre</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_close">Encerrar</string>

@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -21,6 +23,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
 
 public class PlaceholderFragment extends Fragment {
 
@@ -72,15 +76,15 @@ public class PlaceholderFragment extends Fragment {
                         longitude_textview = (TextView) rootView.findViewById(R.id.lon),
                         netWork = (TextView) rootView.findViewById(R.id.tipoderede);
 
-                forcasinal.setText("Qualidade do sinal: Torres: " + main.torres + " - DBM:  " + main.dbm);
-                operadoraview.setText("Operadora: " + main.telephonyManager.getNetworkOperatorName() + main.phoneType);
-                netWork.setText("Tipo de rede: " + main.netWorkType);
-                cidview.setText("CID " +main.cid);
-                lacview.setText("LAC " + main.lac);
-                mccview.setText("Mobile Country Code (MCC): " + main.mcc);
-                mncview.setText("Mobile Network Code (MNC): " + main.mnc);
-                latitude_textview.setText("Latitude: " + main.latitude);
-                longitude_textview.setText("Longitude: " + main.longitude);
+                forcasinal.setText("Qualidade do sinal: Torres: " + main.cell.getTorres() + " - DBM:  " + main.cell.getDbm());
+                operadoraview.setText("Operadora: " + main.telephonyManager.getNetworkOperatorName() +" - "+ main.cell.getPhoneType());
+                netWork.setText("Tipo de rede: " + main.cell.getNetWorkType());
+                cidview.setText("CID " +main.cell.getCid());
+                lacview.setText("LAC " + main.cell.getLac());
+                mccview.setText("Mobile Country Code (MCC): " + main.cell.getMcc());
+                mncview.setText("Mobile Network Code (MNC): " + main.cell.getMnc());
+                latitude_textview.setText("Latitude: " + main.cell.getLatitude());
+                longitude_textview.setText("Longitude: " + main.cell.getLongitude());
                 break;
 
             case 2:
@@ -91,6 +95,15 @@ public class PlaceholderFragment extends Fragment {
                 rootView = inflater.inflate(R.layout.fragment_graficos, container, false);
                 break;
             case 4:
+                rootView = inflater.inflate(R.layout.fragment_list, container, false);
+                ListView list_text_view = (ListView) rootView.findViewById(R.id.listView);
+                TextView size = (TextView) rootView.findViewById(R.id.size);
+                List<Phone> list = main.database_acesso.buscar_phone();
+                PhoneAdapter adapter = new PhoneAdapter(main.getApplicationContext(),list);
+                list_text_view.setAdapter(adapter);
+                size.setText("Qtd de registros: " + list.size());
+                break;
+            case 5:
                 rootView = inflater.inflate(R.layout.fragment_sobre, container, false);
                 break;
             case 1000:
