@@ -330,7 +330,6 @@ public class MainActivity extends ActionBarActivity
                 tipo = "Desconhecido";
             }
             Log.i("Cell Info", "Tipo: "+ tipo + ". Torres: " + cell.getTorres() + ". DBM: "+ cell.getDbm());
-            Toast.makeText(getApplicationContext() ,"Tipo: "+ tipo + " - Torres: " + cell.getTorres() + " - DBM: "+ cell.getDbm(), Toast.LENGTH_SHORT).show();
         }catch (Exception e) {
             Log.e("CELL INFO: ", "Unable to obtain cell signal information", e);
         }
@@ -443,7 +442,6 @@ public class MainActivity extends ActionBarActivity
         }
         //mensagem de Log.
         Log.i("Called: ", "location changed. Lat: " + cell.getLatitude() + " lng: " + cell.getLongitude());
-        Toast.makeText(getApplicationContext() ,"Location Changed!", Toast.LENGTH_SHORT).show();
         database_acesso.inserir_phone(cell);
     }
 }
