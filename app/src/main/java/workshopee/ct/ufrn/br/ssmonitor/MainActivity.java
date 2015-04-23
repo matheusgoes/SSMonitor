@@ -63,8 +63,8 @@ public class MainActivity extends ActionBarActivity
     DrawerLayout drawerLayout;
     Bundle bundle;
     Menu _menu;
-    PolylineOptions options;
     String provider;
+    Location lastLocation;
     boolean notifications_actived = true;
     int fragmentId;
 
@@ -75,12 +75,10 @@ public class MainActivity extends ActionBarActivity
 
         super.onCreate(savedInstanceState);
         bundle = savedInstanceState;
-
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         database_acesso = new Database_Acesso(getApplicationContext());
-        options = new PolylineOptions();
-
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
         if (telephonyManager != null) {
             if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_READY) {
                 locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -106,27 +104,20 @@ public class MainActivity extends ActionBarActivity
                     provider = locationmanager.getBestProvider(criteria, true);
                     if (locationmanager.getLastKnownLocation(provider) != null) {
                         location = locationmanager.getLastKnownLocation(provider);
-                        //latitude = location.getLatitude();
                         cell.setLatitude(location.getLatitude());
-                        //longitude = location.getLongitude();
                         cell.setLongitude(location.getLongitude());
                     } else {
                         gpsTracker = new GPSTracker(this);
                         location = gpsTracker.getLocation();
-                        //latitude = gpsTracker.getLatitude();
                         cell.setLatitude(gpsTracker.getLatitude());
-                        //longitude = gpsTracker.getLongitude();
                         cell.setLongitude(gpsTracker.getLongitude());
                     }
 
-                    getInfo();
-
-
-                    //Cria instancia de TelephonyManager e implementa o location listener
+                    getInfo(location);
                     locationListener = new LocationListener() {
                         @Override
                         public void onLocationChanged(Location _location) {
-                            getInfo();
+                            getInfo(_location);
                         }
 
                         @Override
@@ -295,41 +286,32 @@ public class MainActivity extends ActionBarActivity
         Log.i("App"," FINISHING");
     }
 
-    public void getInfo(){
+    public void getInfo(Location location){
         //Obtem novos dados de localização
-        //latitude = location.getLatitude();
         cell.setLatitude(location.getLatitude());
-        //longitude = location.getLongitude();
         cell.setLongitude(location.getLongitude());
+
         String tipo;
         try {
             CellInfo info = telephonyManager.getAllCellInfo().get(0);
             if (info instanceof CellInfoGsm) {
                 cellSignalStrengthGsm = ((CellInfoGsm) info).getCellSignalStrength();
-                //torres = cellSignalStrengthGsm.getLevel();
                 cell.setTorres(cellSignalStrengthGsm.getLevel());
-                //dbm = cellSignalStrengthGsm.getDbm();
                 cell.setDbm(cellSignalStrengthGsm.getDbm());
                 tipo = "GSM";
             } else if (info instanceof CellInfoCdma) {
                 cellSignalStrengthCdma = ((CellInfoCdma) info).getCellSignalStrength();
-                //torres = cellSignalStrengthCdma.getLevel();
                 cell.setTorres(cellSignalStrengthCdma.getLevel());
-                //dbm = cellSignalStrengthCdma.getDbm();
                 cell.setDbm(cellSignalStrengthCdma.getDbm());
                 tipo = "CDMA";
             } else if (info instanceof CellInfoLte) {
                 cellSignalStrengthLte = ((CellInfoLte) info).getCellSignalStrength();
-                //torres = cellSignalStrengthLte.getLevel();
                 cell.setTorres(cellSignalStrengthLte.getLevel());
-                //dbm = cellSignalStrengthLte.getDbm();
                 cell.setDbm(cellSignalStrengthLte.getDbm());
                 tipo = "LTE";
             }else if (info instanceof CellInfoWcdma){
                 cellSignalStrengthwcdma= ((CellInfoWcdma) info).getCellSignalStrength();
-                //torres = cellSignalStrengthwcdma.getLevel();
                 cell.setTorres(cellSignalStrengthwcdma.getLevel());
-                //dbm = cellSignalStrengthwcdma.getDbm();
                 cell.setDbm(cellSignalStrengthwcdma.getDbm());
                 tipo = "WCDMA";
             } else {
@@ -340,117 +322,83 @@ public class MainActivity extends ActionBarActivity
             Log.e("CELL INFO: ", "Unable to obtain cell signal information", e);
         }
 
-
-
-        //operadora = telephonyManager.getNetworkOperatorName();
         cell.setOperadora(telephonyManager.getNetworkOperatorName());
 
         if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM) {
             GsmCellLocation gsmLocation = (GsmCellLocation) telephonyManager.getCellLocation();
-            //cid = gsmLocation.getCid();
             cell.setCid(gsmLocation.getCid());
-            //lac = gsmLocation.getLac();
             cell.setLac(gsmLocation.getLac());
 
-            //phoneType = "GSM";
             cell.setPhoneType("GSM");
         } else if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA) {
-            //phoneType = "CDMA";
             cell.setPhoneType("CDMA");
             Log.i("Cell type", "CDMA");
         } else {
             cell.setCid(0);
             cell.setLac(0);
-            //phoneType = "Desconhecido";
             cell.setPhoneType("Desconhecido");
         }
 
         if (telephonyManager.getNetworkOperator() != null) {
-            //mcc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(0, 3));
             cell.setMcc(Integer.parseInt(telephonyManager.getNetworkOperator().substring(0, 3)));
-            //mnc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(3));
             cell.setMnc(Integer.parseInt(telephonyManager.getNetworkOperator().substring(3)));
         }
 
-        /* código repetido
-        * if (telephonyManager.getNetworkOperator() != null) {
-            mcc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(0, 3));
-            mnc = Integer.parseInt(telephonyManager.getNetworkOperator().substring(3));
-        }*/
-
-        //networkTypeCode = telephonyManager.getNetworkType();
         cell.setNetworkTypeCode(telephonyManager.getNetworkType());
 
         switch (cell.getNetworkTypeCode()) {
             case TelephonyManager.NETWORK_TYPE_GPRS:
-                //netWorkType = "GPRS - 2G";
                 cell.setNetWorkType("GPRS - 2G");
                 break;
             case TelephonyManager.NETWORK_TYPE_EDGE:
-                //netWorkType = "EDGE - 2G";
                 cell.setNetWorkType("EDGE - 2G");
                 break;
             case TelephonyManager.NETWORK_TYPE_CDMA:
-                //netWorkType = "CDMA - 2G";
                 cell.setNetWorkType("CDMA - 2G");
                 break;
             case TelephonyManager.NETWORK_TYPE_1xRTT:
-                //netWorkType = "1xRTT - 2G";
                 cell.setNetWorkType("1xRTT - 2G");
                 break;
             case TelephonyManager.NETWORK_TYPE_IDEN:
-                //netWorkType = "IDEN - 2G";
                 cell.setNetWorkType("IDEN - 2G");
                 break;
             case TelephonyManager.NETWORK_TYPE_UMTS:
-                //netWorkType = "UMTS - 3G";
                 cell.setNetWorkType("UMTS - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_EVDO_0:
-                //netWorkType = "EVDO_0 - 3G";
                 cell.setNetWorkType("EVDO_0 - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_EVDO_A:
-                //netWorkType = "EVDO_A - 3G";
                 cell.setNetWorkType("EVDO_A - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_HSDPA:
-                //netWorkType = "HSDPA - 3G";
                 cell.setNetWorkType("HSDPA - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_HSUPA:
-                //netWorkType = "HSUPA - 3G";
                 cell.setNetWorkType("HSUPA - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_HSPA:
-                //netWorkType = "HSPA - 3G";
                 cell.setNetWorkType("HSPA - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_EVDO_B:
-                //netWorkType = "EVDO_B - 3G";
                 cell.setNetWorkType("EVDO_B - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_EHRPD:
-                //netWorkType = "EHRPD - 3G";
                 cell.setNetWorkType("EHRPD - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_HSPAP:
-                //netWorkType = "HSPAP - 3G";
                 cell.setNetWorkType("HSPAP - 3G");
                 break;
             case TelephonyManager.NETWORK_TYPE_LTE:
-                //netWorkType = "LTE - 4G";
                 cell.setNetWorkType("LTE - 4G");
                 break;
             default:
-                //netWorkType = "Unknown";
                 cell.setNetWorkType("Desconhecido");
         }
         //mensagem de Log.
         Log.i("Called: ", "location changed. Lat: " + cell.getLatitude() + " lng: " + cell.getLongitude());
         database_acesso.inserir_phone(cell);
-        options.add(new LatLng(cell.getLatitude(), cell.getLongitude()));
-
+        lastLocation = location;
     }
 }
 

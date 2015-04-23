@@ -27,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -39,8 +40,6 @@ import java.util.List;
 
 public class PlaceholderFragment extends Fragment {
 
-    // The fragment argument representing the section number for this
-    //fragment.
     public static final int MAP_TYPE_NONE = 0;
     public static final int MAP_TYPE_NORMAL = 1;
     public static final int MAP_TYPE_SATELLITE = 2;
@@ -50,11 +49,7 @@ public class PlaceholderFragment extends Fragment {
     GoogleMap mMap;
     static double latitude, longitude;
     int mapType=GoogleMap.MAP_TYPE_TERRAIN;
-    int graf_type = 0;
-
-
-    // Returns a new instance of this fragment for the given section
-    //number.
+    CircleOptions options;
 
     public static PlaceholderFragment newInstance(int sectionNumber) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -102,11 +97,42 @@ public class PlaceholderFragment extends Fragment {
             case 2:
                 rootView = inflater.inflate(R.layout.activity_mapa, container, false);
                 mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
-
-                main.options.color(Color.RED);
-                main.options.width(5);
-                main.options.visible(true);
-                mMap.addPolyline(main.options);
+                List<Phone> listMap =  main.database_acesso.buscar_phone();
+                Location atual = new Location("Atual"), anterior = new Location("anterior");
+                anterior.setLatitude(-5.7229835);
+                anterior.setLongitude(-34.6779897);
+                int cor = Color.RED;
+                for (int i=0; i< listMap.size(); i++){
+                    switch (listMap.get(i).getTorres()){
+                        case 4:
+                            cor = Color.GREEN;
+                            break;
+                        case 3:
+                            cor = Color.BLUE;
+                            break;
+                        case 2:
+                            cor = Color.YELLOW;
+                            break;
+                        case 1:
+                            cor = Color.RED;
+                            break;
+                        case 0:
+                            cor = Color.BLACK;
+                    }
+                    atual.setLatitude(listMap.get(i).getLatitude());
+                    atual.setLongitude(listMap.get(i).getLongitude());
+                    if (atual.distanceTo(anterior) > 10){
+                        options = new CircleOptions().
+                                center(new LatLng(listMap.get(i).getLatitude(),listMap.get(i).getLongitude()))
+                                .fillColor(cor)
+                                .radius(10.0)
+                                .strokeWidth(0);
+                        mMap.addCircle(options);
+                        Log.i("Circulo", "desenhando");
+                        anterior.setLatitude(atual.getLatitude());
+                        anterior.setLongitude(atual.getLongitude());
+                    }
+                }
                 mMap.setMapType(mapType);
                 Log.i("MapType", ""+mMap.getMapType());
                 mMap.setMyLocationEnabled(true);
@@ -145,7 +171,6 @@ public class PlaceholderFragment extends Fragment {
                                 series1.setColor(Color.parseColor("#0099FF"));
                                 series1.setShape(PointsGraphSeries.Shape.POINT);
                                 graph.addSeries(series1);
-
                                 break;
                             case 1:
                                 graph.removeAllSeries();
