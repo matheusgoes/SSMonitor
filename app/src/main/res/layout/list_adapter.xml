@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/material_blue_grey_950"
+    >
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/image"
+        android:src="@drawable/ic_notif"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="ID"
+        android:id="@+id/id"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/image"
+        android:layout_marginStart="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Torres"
+        android:id="@+id/pot"
+        android:layout_below="@+id/id"
+        android:layout_alignStart="@+id/id" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Latitude"
+        android:id="@+id/lat"
+        android:layout_below="@+id/pot"
+        android:layout_alignStart="@+id/pot" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Longitude"
+        android:id="@+id/lng"
+        android:layout_below="@+id/dbm"
+        android:layout_toEndOf="@+id/lat"
+        android:layout_marginStart="26dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="DBM"
+        android:id="@+id/dbm"
+        android:layout_above="@+id/lat"
+        android:layout_alignStart="@+id/lng" />
+
+
+</RelativeLayout>

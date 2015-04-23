@@ -262,7 +262,7 @@ public class MainActivity extends ActionBarActivity
             n  = new Notification.Builder(this)
                     .setContentTitle("Ainda estamos aqui!")
                     .setContentText("Clique para encerrar")
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_notif)
                     .setContentIntent(pIntent)
                     .setAutoCancel(true)
                     .addAction(R.drawable.abc_ic_clear_mtrl_alpha, "Finalizar", pIntent).build();

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -93,15 +94,25 @@ public class PlaceholderFragment extends Fragment {
                 break;
             case 3:
                 rootView = inflater.inflate(R.layout.fragment_graficos, container, false);
+
                 break;
             case 4:
                 rootView = inflater.inflate(R.layout.fragment_list, container, false);
-                ListView list_text_view = (ListView) rootView.findViewById(R.id.listView);
-                TextView size = (TextView) rootView.findViewById(R.id.size);
+                final ListView list_text_view = (ListView) rootView.findViewById(R.id.listView);
                 List<Phone> list = main.database_acesso.buscar_phone();
+                Button dropButton = (Button) rootView.findViewById(R.id.drop);
+                dropButton.setText(dropButton.getText() + "(" + list.size() + ")");
                 PhoneAdapter adapter = new PhoneAdapter(main.getApplicationContext(),list);
                 list_text_view.setAdapter(adapter);
-                size.setText("Qtd de registros: " + list.size());
+                dropButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        main.database_acesso.clear();
+                        List<Phone> list = main.database_acesso.buscar_phone();
+                        PhoneAdapter adapter = new PhoneAdapter(main.getApplicationContext(),list);
+                        list_text_view.setAdapter(adapter);
+                    }
+                });
                 break;
             case 5:
                 rootView = inflater.inflate(R.layout.fragment_sobre, container, false);

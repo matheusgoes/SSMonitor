@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  */
 public class Database_Acesso {
     private SQLiteDatabase db;
+    private static final String table1 = "phone";
 
     public Database_Acesso(Context context) {
         Database aux_db = new Database(context);
@@ -31,7 +33,6 @@ public class Database_Acesso {
         valores.put("operadora", ph.getOperadora());
         valores.put("cid",ph.getCid());
         valores.put("lac",ph.getLac());
-
         db.insert("phone", null, valores);
     }
 
@@ -68,5 +69,8 @@ public class Database_Acesso {
         return lista;
     }
 
+    void clear(){
+        db.delete("phone", "_id>?", new String [] { "-1" });
+    }
 
 }
