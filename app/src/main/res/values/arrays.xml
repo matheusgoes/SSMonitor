@@ -6,4 +6,10 @@
         <item>@string/spinnerTipoMapaTerreno</item>
         <item>@string/spinnerTipoMapaHibrido</item>
     </string-array>
+
+    <string-array name="tiposdegrafico">
+        <item>@string/spinnerTipoGraficoPosicaoLat</item>
+        <item>@string/spinnerTipoGraficoPosicaoLng</item>
+        <item>@string/spinnerTipoGraficoSinal</item>
+    </string-array>
 </resources>

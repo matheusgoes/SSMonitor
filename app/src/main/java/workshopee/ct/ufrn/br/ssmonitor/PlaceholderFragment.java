@@ -1,7 +1,11 @@
 package workshopee.ct.ufrn.br.ssmonitor;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,6 +28,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.util.List;
 
@@ -40,6 +48,7 @@ public class PlaceholderFragment extends Fragment {
     GoogleMap mMap;
     static double latitude, longitude;
     static int mapType=GoogleMap.MAP_TYPE_TERRAIN;
+    int graf_type = 0;
 
 
     // Returns a new instance of this fragment for the given section
@@ -94,23 +103,77 @@ public class PlaceholderFragment extends Fragment {
                 break;
             case 3:
                 rootView = inflater.inflate(R.layout.fragment_graficos, container, false);
+                final GraphView graph = (GraphView) rootView.findViewById(R.id.graph);
+                Spinner spinnerGraficos = (Spinner) rootView.findViewById(R.id.spinnerGraficos);
+                spinnerGraficos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        List<Phone> list = main.database_acesso.buscar_phone();
+                        switch (position) {
+                            case 0:
+                                graph.removeAllSeries();
+                                PointsGraphSeries<DataPoint> series1;
+                                DataPoint[] dataPoint1 = new DataPoint[list.size()];
+                                for(int i=0; i<list.size(); i++) {
+                                    dataPoint1[i] = new DataPoint(list.get(i).getId(), list.get(i).getLatitude());
+                                }
+                                series1 =new PointsGraphSeries<>(dataPoint1);
+                                series1.setColor(Color.parseColor("#0099FF"));
+                                series1.setShape(PointsGraphSeries.Shape.POINT);
+                                graph.addSeries(series1);
 
+                                break;
+                            case 1:
+                                graph.removeAllSeries();
+                                PointsGraphSeries<DataPoint> series3;
+                                DataPoint[] dataPoint3 = new DataPoint[list.size()];
+                                for(int i=0; i<list.size(); i++) {
+                                    dataPoint3[i] = new DataPoint(list.get(i).getId(), list.get(i).getLongitude());
+                                }
+                                series3 =new PointsGraphSeries<>(dataPoint3);
+                                series3.setColor(Color.parseColor("#009900"));
+                                series3.setShape(PointsGraphSeries.Shape.POINT);
+                                graph.addSeries(series3);
+                                break;
+                            case 2:
+                                graph.removeAllSeries();
+                                graph.getViewport().setMinX(0);
+                                graph.getViewport().setMaxY(4);
+                                LineGraphSeries<DataPoint> series2;
+                                DataPoint[] dataPoint2 = new DataPoint[list.size()];
+                                for(int i=0; i<list.size(); i++) {
+                                    dataPoint2[i] = new DataPoint(list.get(i).getId(), list.get(i).getTorres());
+                                }
+                                series2 =new LineGraphSeries<>(dataPoint2);
+                                series2.setColor(Color.parseColor("#990000"));
+                                graph.addSeries(series2);
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        mapType = GoogleMap.MAP_TYPE_NORMAL;
+                    }
+                });
                 break;
             case 4:
                 rootView = inflater.inflate(R.layout.fragment_list, container, false);
-                final ListView list_text_view = (ListView) rootView.findViewById(R.id.listView);
-                List<Phone> list = main.database_acesso.buscar_phone();
+                final ListView list_view = (ListView) rootView.findViewById(R.id.listView);
+                List<Phone> list =  main.database_acesso.buscar_phone();
                 Button dropButton = (Button) rootView.findViewById(R.id.drop);
                 dropButton.setText(dropButton.getText() + "(" + list.size() + ")");
                 PhoneAdapter adapter = new PhoneAdapter(main.getApplicationContext(),list);
-                list_text_view.setAdapter(adapter);
+                list_view.setAdapter(adapter);
+                list_view.setDivider(new ColorDrawable(Color.parseColor("#19A3A3")));
+                list_view.setDividerHeight(2);
                 dropButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         main.database_acesso.clear();
                         List<Phone> list = main.database_acesso.buscar_phone();
                         PhoneAdapter adapter = new PhoneAdapter(main.getApplicationContext(),list);
-                        list_text_view.setAdapter(adapter);
+                        list_view.setAdapter(adapter);
                     }
                 });
                 break;
@@ -120,11 +183,11 @@ public class PlaceholderFragment extends Fragment {
             case 1000:
                 main.getSupportActionBar().setTitle("Configurações");
                 rootView = inflater.inflate(R.layout.fragment_settings, container, false);
-                Spinner spinner = (Spinner) rootView.findViewById(R.id.spinnerMapas);
-                spinner.setSelection(mapType-1);
+                Spinner spinnerMapas = (Spinner) rootView.findViewById(R.id.spinnerMapas);
+                spinnerMapas.setSelection(mapType-1);
                 final Switch mSwitch = (Switch) rootView.findViewById(R.id.ativarNotificacoesSwitch);
                 mSwitch.setChecked(main.notifications_actived);
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                spinnerMapas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         switch (position) {

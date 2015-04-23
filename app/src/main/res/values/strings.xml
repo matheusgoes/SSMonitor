@@ -31,7 +31,10 @@
     <string name="spinnerTipoMapaNormal">Normal</string>
     <string name="spinnerTipoMapaHibrido">Hibrido</string>
     <string name="tipoDeMapa">Tipo de Mapa</string>
-
+    <string name="tipoDeGrafico">Tipo de Gráfico</string>
+    <string name="spinnerTipoGraficoPosicaoLat">Latitude</string>
+    <string name="spinnerTipoGraficoPosicaoLng">Longitude</string>
+    <string name="spinnerTipoGraficoSinal">Sinal</string>
 
 
 
