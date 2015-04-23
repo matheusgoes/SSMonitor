@@ -33,6 +33,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -59,6 +63,7 @@ public class MainActivity extends ActionBarActivity
     DrawerLayout drawerLayout;
     Bundle bundle;
     Menu _menu;
+    PolylineOptions options;
     String provider;
     boolean notifications_actived = true;
     int fragmentId;
@@ -73,6 +78,7 @@ public class MainActivity extends ActionBarActivity
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         database_acesso = new Database_Acesso(getApplicationContext());
+        options = new PolylineOptions();
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager != null) {
@@ -329,7 +335,7 @@ public class MainActivity extends ActionBarActivity
             } else {
                 tipo = "Desconhecido";
             }
-            Log.i("Cell Info", "Tipo: "+ tipo + ". Torres: " + cell.getTorres() + ". DBM: "+ cell.getDbm());
+            Log.i("Cell Info", "Tipo: " + tipo + ". Torres: " + cell.getTorres() + ". DBM: " + cell.getDbm());
         }catch (Exception e) {
             Log.e("CELL INFO: ", "Unable to obtain cell signal information", e);
         }
@@ -443,6 +449,8 @@ public class MainActivity extends ActionBarActivity
         //mensagem de Log.
         Log.i("Called: ", "location changed. Lat: " + cell.getLatitude() + " lng: " + cell.getLongitude());
         database_acesso.inserir_phone(cell);
+        options.add(new LatLng(cell.getLatitude(), cell.getLongitude()));
+
     }
 }
 

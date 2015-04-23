@@ -28,6 +28,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -47,7 +49,7 @@ public class PlaceholderFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     GoogleMap mMap;
     static double latitude, longitude;
-    static int mapType=GoogleMap.MAP_TYPE_TERRAIN;
+    int mapType=GoogleMap.MAP_TYPE_TERRAIN;
     int graf_type = 0;
 
 
@@ -99,7 +101,29 @@ public class PlaceholderFragment extends Fragment {
 
             case 2:
                 rootView = inflater.inflate(R.layout.activity_mapa, container, false);
-                marcarPosicao();
+                mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
+
+                main.options.color(Color.RED);
+                main.options.width(5);
+                main.options.visible(true);
+                mMap.addPolyline(main.options);
+                mMap.setMapType(mapType);
+                Log.i("MapType", ""+mMap.getMapType());
+                mMap.setMyLocationEnabled(true);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17);
+                mMap.animateCamera(cameraUpdate);
+                mMap.getUiSettings().setCompassEnabled(true);
+                mMap.getUiSettings().setAllGesturesEnabled(true);
+                Location myLocation = mMap.getMyLocation();
+                mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                    @Override
+                    public void onMyLocationChange(Location location) {
+                        Log.i("Chamada: ", "Localização do Google map alterada");
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
+                                location.getLongitude()), 17);
+                        mMap.animateCamera(cameraUpdate);
+                    }
+                });
                 break;
             case 3:
                 rootView = inflater.inflate(R.layout.fragment_graficos, container, false);
@@ -139,12 +163,12 @@ public class PlaceholderFragment extends Fragment {
                                 graph.removeAllSeries();
                                 graph.getViewport().setMinX(0);
                                 graph.getViewport().setMaxY(4);
-                                LineGraphSeries<DataPoint> series2;
+                                PointsGraphSeries<DataPoint> series2;
                                 DataPoint[] dataPoint2 = new DataPoint[list.size()];
                                 for(int i=0; i<list.size(); i++) {
                                     dataPoint2[i] = new DataPoint(list.get(i).getId(), list.get(i).getTorres());
                                 }
-                                series2 =new LineGraphSeries<>(dataPoint2);
+                                series2 =new PointsGraphSeries<>(dataPoint2);
                                 series2.setColor(Color.parseColor("#990000"));
                                 graph.addSeries(series2);
                                 break;
@@ -241,43 +265,6 @@ public class PlaceholderFragment extends Fragment {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
-    }
-
-    public void marcarPosicao(){
-        mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
-        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        mMap.setMapType(mapType);
-        Log.i("MapType", ""+mMap.getMapType());
-        //mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        //mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-        mMap.setMyLocationEnabled(true);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17);
-        mMap.animateCamera(cameraUpdate);
-        mMap.getUiSettings().setCompassEnabled(true);
-        mMap.getUiSettings().setAllGesturesEnabled(true);
-        Location myLocation = mMap.getMyLocation();
-        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
-                Log.i("Chamada: ", "Localização do Google map alterada");
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
-                        location.getLongitude()), 17);
-                mMap.animateCamera(cameraUpdate);
-            }
-        });
-
-
-            /*PolylineOptions options = new PolylineOptions();
-
-            options.color( Color.parseColor("#CC0000FF") );
-            options.width( 5 );
-            options.visible( true );
-            options.add(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));*/
-
-            /*mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(latitude, longitude))
-                    .title("Estou aqui")
-                    .snippet("Latitude "+latitude + " longitude " + longitude));*/
     }
 }
 
