@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.Gradient;
+import com.google.maps.android.heatmaps.WeightedLatLng;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.PointsGraphSeries;
@@ -108,29 +109,33 @@ public class PlaceholderFragment extends Fragment {
                 mMap.animateCamera(cameraUpdate);
                 mMap.getUiSettings().setCompassEnabled(true);
                 mMap.getUiSettings().setAllGesturesEnabled(true);
+                if (listMap.size()>0) {
+                    //HEATMAP
+                    int[] colors = {
+                            Color.rgb(255, 0, 0),    // red
+                            Color.rgb(0, 0, 255),   // blue
+                            Color.rgb(102, 225, 0) // green
+                    };
 
-                //HEATMAP
-                int[] colors = {
-                        Color.rgb(255, 0, 0),   // red
-                        Color.rgb(102, 225, 0) // green
-                };
+                    float[] startPoints = {
+                            0.1f, 0.2f ,0.3f
+                    };
 
-                float[] startPoints = {
-                        0.2f, 1f
-                };
+                    ArrayList<WeightedLatLng> pontos = new ArrayList<>();
 
-                ArrayList<LatLng> listLatLng = new ArrayList<>();
+                    for (int i = 0; i < listMap.size(); i++) {
+                        pontos.add(new WeightedLatLng(new LatLng(listMap.get(i).getLatitude(), listMap.get(i).getLongitude()), listMap.get(i).getDbm()));
+                    }
+                    mProvider = new HeatmapTileProvider
+                            .Builder()
+                            .weightedData(pontos)
+                            .build();
+                    mProvider.setGradient(new Gradient(colors, startPoints));
+                    mProvider.setRadius(20);
+                    mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                    // ATE AQUI
 
-                for (int i=0; i<listMap.size(); i++){
-                    listLatLng.add(new LatLng(listMap.get(i).getLatitude(), listMap.get(i).getLongitude()));
                 }
-                mProvider = new HeatmapTileProvider.Builder()
-                        .data(listLatLng)
-                        .build();
-                mProvider.setGradient(new Gradient(colors, startPoints));
-                mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-                // ATE AQUI
-
                 mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
                     @Override
                     public void onMyLocationChange(Location location) {
