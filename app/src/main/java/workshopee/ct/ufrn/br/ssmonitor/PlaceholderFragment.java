@@ -26,10 +26,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.heatmaps.Gradient;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.PointsGraphSeries;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PlaceholderFragment extends Fragment {
@@ -40,10 +47,12 @@ public class PlaceholderFragment extends Fragment {
     public static final int MAP_TYPE_TERRAIN = 3;
     public static final int MAP_TYPE_HYBRID = 4;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    GoogleMap mMap;
     static double latitude, longitude;
     int mapType=GoogleMap.MAP_TYPE_TERRAIN;
+    private HeatmapTileProvider mProvider;
+    private TileOverlay mOverlay;
     CircleOptions options;
+    GoogleMap mMap;
 
     public static PlaceholderFragment newInstance(int sectionNumber) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -92,42 +101,6 @@ public class PlaceholderFragment extends Fragment {
                 rootView = inflater.inflate(R.layout.activity_mapa, container, false);
                 mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
                 List<Phone> listMap =  main.database_acesso.buscar_phone();
-                Location atual = new Location("Atual"), anterior = new Location("anterior");
-                anterior.setLatitude(-5.7229835);
-                anterior.setLongitude(-34.6779897);
-                int cor = Color.RED;
-                for (int i=0; i< listMap.size(); i++){
-                    switch (listMap.get(i).getTorres()){
-                        case 4:
-                            cor = Color.GREEN;
-                            break;
-                        case 3:
-                            cor = Color.BLUE;
-                            break;
-                        case 2:
-                            cor = Color.YELLOW;
-                            break;
-                        case 1:
-                            cor = Color.RED;
-                            break;
-                        case 0:
-                            cor = Color.BLACK;
-                    }
-                    atual.setLatitude(listMap.get(i).getLatitude());
-                    atual.setLongitude(listMap.get(i).getLongitude());
-                    if (atual.distanceTo(anterior) > 10){
-                        options = new CircleOptions().
-                                center(new LatLng(listMap.get(i).getLatitude(),listMap.get(i).getLongitude()))
-                                .fillColor(cor)
-                                .radius(5.0)
-                                .strokeWidth(5)
-                                .strokeColor(Color.TRANSPARENT);
-                        mMap.addCircle(options);
-                        Log.i("Circulo", "desenhando");
-                        anterior.setLatitude(atual.getLatitude());
-                        anterior.setLongitude(atual.getLongitude());
-                    }
-                }
                 mMap.setMapType(mapType);
                 Log.i("MapType", ""+mMap.getMapType());
                 mMap.setMyLocationEnabled(true);
@@ -135,7 +108,29 @@ public class PlaceholderFragment extends Fragment {
                 mMap.animateCamera(cameraUpdate);
                 mMap.getUiSettings().setCompassEnabled(true);
                 mMap.getUiSettings().setAllGesturesEnabled(true);
-                Location myLocation = mMap.getMyLocation();
+
+                //HEATMAP
+                int[] colors = {
+                        Color.rgb(255, 0, 0),   // red
+                        Color.rgb(102, 225, 0) // green
+                };
+
+                float[] startPoints = {
+                        0.2f, 1f
+                };
+
+                ArrayList<LatLng> listLatLng = new ArrayList<>();
+
+                for (int i=0; i<listMap.size(); i++){
+                    listLatLng.add(new LatLng(listMap.get(i).getLatitude(), listMap.get(i).getLongitude()));
+                }
+                mProvider = new HeatmapTileProvider.Builder()
+                        .data(listLatLng)
+                        .build();
+                mProvider.setGradient(new Gradient(colors, startPoints));
+                mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                // ATE AQUI
+
                 mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
                     @Override
                     public void onMyLocationChange(Location location) {
@@ -288,3 +283,42 @@ public class PlaceholderFragment extends Fragment {
     }
 }
 
+/* CODIGO DE CIRCULOS NO MAPA
+
+                Location atual = new Location("Atual"), anterior = new Location("anterior");
+                anterior.setLatitude(-5.7229835);
+                anterior.setLongitude(-34.6779897);
+                int cor = Color.RED;
+                for (int i=0; i< listMap.size(); i++){
+                    switch (listMap.get(i).getTorres()){
+                        case 4:
+                            cor = Color.GREEN;
+                            break;
+                        case 3:
+                            cor = Color.BLUE;
+                            break;
+                        case 2:
+                            cor = Color.YELLOW;
+                            break;
+                        case 1:
+                            cor = Color.RED;
+                            break;
+                        case 0:
+                            cor = Color.BLACK;
+                    }
+                    atual.setLatitude(listMap.get(i).getLatitude());
+                    atual.setLongitude(listMap.get(i).getLongitude());
+                    if (atual.distanceTo(anterior) > 10){
+                        options = new CircleOptions().
+                                center(new LatLng(listMap.get(i).getLatitude(),listMap.get(i).getLongitude()))
+                                .fillColor(cor)
+                                .radius(5.0)
+                                .strokeWidth(5)
+                                .strokeColor(Color.TRANSPARENT);
+                        mMap.addCircle(options);
+                        Log.i("Circulo", "desenhando");
+                        anterior.setLatitude(atual.getLatitude());
+                        anterior.setLongitude(atual.getLongitude());
+                    }
+                }
+ */

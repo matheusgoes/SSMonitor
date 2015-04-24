@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':library', ':demo'
+project(':library').projectDir = new File('libs/MapsUtils/library')
