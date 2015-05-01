@@ -160,7 +160,7 @@ public class PlaceholderFragment extends Fragment {
                                 PointsGraphSeries<DataPoint> series1;
                                 DataPoint[] dataPoint1 = new DataPoint[list.size()];
                                 for(int i=0; i<list.size(); i++) {
-                                    dataPoint1[i] = new DataPoint(list.get(i).getId(), list.get(i).getLatitude());
+                                    dataPoint1[i] = new DataPoint(i, list.get(i).getLatitude());
                                 }
                                 series1 =new PointsGraphSeries<>(dataPoint1);
                                 series1.setColor(Color.parseColor("#0099FF"));
@@ -172,7 +172,7 @@ public class PlaceholderFragment extends Fragment {
                                 PointsGraphSeries<DataPoint> series3;
                                 DataPoint[] dataPoint3 = new DataPoint[list.size()];
                                 for(int i=0; i<list.size(); i++) {
-                                    dataPoint3[i] = new DataPoint(list.get(i).getId(), list.get(i).getLongitude());
+                                    dataPoint3[i] = new DataPoint(i, list.get(i).getLongitude());
                                 }
                                 series3 =new PointsGraphSeries<>(dataPoint3);
                                 series3.setColor(Color.parseColor("#009900"));
@@ -180,17 +180,16 @@ public class PlaceholderFragment extends Fragment {
                                 graph.addSeries(series3);
                                 break;
                             case 2:
-                                graph.removeAllSeries();
-                                graph.getViewport().setMinX(0);
-                                graph.getViewport().setMaxY(4);
-                                PointsGraphSeries<DataPoint> series2;
+                                PointsGraphSeries<DataPoint> serieSinal;
                                 DataPoint[] dataPoint2 = new DataPoint[list.size()];
                                 for(int i=0; i<list.size(); i++) {
-                                    dataPoint2[i] = new DataPoint(list.get(i).getId(), list.get(i).getTorres());
+                                    dataPoint2[i] = new DataPoint(i, list.get(i).getTorres());
                                 }
-                                series2 =new PointsGraphSeries<>(dataPoint2);
-                                series2.setColor(Color.parseColor("#990000"));
-                                graph.addSeries(series2);
+                                graph.removeAllSeries();
+                                serieSinal = new PointsGraphSeries<>(dataPoint2);
+                                serieSinal.setColor(Color.parseColor("#990000"));
+                                serieSinal.setShape(PointsGraphSeries.Shape.POINT);
+                                graph.addSeries(serieSinal);
                                 break;
                         }
                     }
