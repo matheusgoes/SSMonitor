@@ -20,7 +20,6 @@ public class PhoneAdapter extends ArrayAdapter<Phone> {
     TextView lng;
     TextView torre;
     TextView dbm;
-
     ImageView imagem;
 
     private List<Phone> values;
