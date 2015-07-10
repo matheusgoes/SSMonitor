@@ -24,7 +24,8 @@
             android:textSize="@dimen/abc_text_size_large_material"
             android:layout_below="@+id/Monitor"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="15dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +35,7 @@
             android:layout_below="@+id/forca"
             android:layout_alignStart="@+id/forca"
             android:textColor="#ff3c85ff"
-            android:textSize="@dimen/abc_text_size_large_material"/>
+            android:textSize="@dimen/abc_text_size_large_material" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,9 +43,9 @@
             android:text="Tipo de rede"
             android:id="@+id/tipoderede"
             android:textColor="#ff3c8500"
-            android:layout_below="@id/operadora"
             android:textSize="@dimen/abc_text_size_large_material"
-            android:layout_alignStart="@+id/operadora"/>
+            android:layout_below="@+id/operadora"
+            android:layout_alignStart="@+id/forca" />
 
 
         <TextView
@@ -52,12 +53,11 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="CID"
-            android:textColor="@color/primary_material_light"
+            android:textColor="#7AA300"
             android:id="@+id/cid"
             android:layout_below="@+id/tipoderede"
             android:layout_alignLeft="@+id/forca"
-            android:textSize="@dimen/abc_text_size_large_material"
-            />
+            android:textSize="@dimen/abc_text_size_large_material" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -65,11 +65,10 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="LAC"
             android:id="@+id/lac"
-            android:textColor="@color/primary_material_light"
-            android:layout_below="@+id/cid"
-            android:layout_alignStart="@+id/forca"
+            android:textColor="#7AA300"
             android:textSize="@dimen/abc_text_size_large_material"
-            />
+            android:layout_below="@+id/tipoderede"
+            android:layout_centerHorizontal="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -77,10 +76,10 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="MCC"
             android:id="@+id/mcc"
-            android:textColor="@color/primary_material_light"
+            android:textColor="#CCCC00"
             android:layout_alignStart="@+id/forca"
             android:textSize="@dimen/abc_text_size_large_material"
-            android:layout_below="@+id/lac"/>
+            android:layout_below="@+id/lac" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -88,33 +87,31 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="MNC"
             android:id="@+id/mnc"
-            android:textColor="@color/primary_material_light"
+            android:textColor="#CCCC00"
             android:layout_alignStart="@+id/forca"
             android:textSize="@dimen/abc_text_size_large_material"
-            android:layout_below="@+id/mcc"/>
+            android:layout_below="@+id/mcc" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="latitude"
+            android:text="Latitude"
             android:id="@+id/lat"
-            android:textColor="@color/primary_material_light"
+            android:textColor="#E0C266"
             android:layout_alignStart="@+id/forca"
             android:textSize="@dimen/abc_text_size_large_material"
-            android:layout_below="@+id/mnc"
-            />
+            android:layout_below="@+id/mnc" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="longitude"
+            android:text="Longitude"
             android:id="@+id/lon"
-            android:textColor="@color/primary_material_light"
+            android:textColor="#E0C266"
             android:textSize="@dimen/abc_text_size_large_material"
             android:layout_below="@+id/lat"
-            android:layout_alignStart="@+id/forca"
-            />
+            android:layout_alignStart="@+id/forca" />
 
     </RelativeLayout>

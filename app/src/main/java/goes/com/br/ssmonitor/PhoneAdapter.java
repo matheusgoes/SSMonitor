@@ -1,4 +1,4 @@
-package workshopee.ct.ufrn.br.ssmonitor;
+package goes.com.br.ssmonitor;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by jaack05 on 22/04/15.
+ * classe para adaptar a lista de objetos phone ao layout
  */
 public class PhoneAdapter extends ArrayAdapter<Phone> {
 
@@ -32,9 +33,6 @@ public class PhoneAdapter extends ArrayAdapter<Phone> {
         this.context = context;
 
     }
-
-
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

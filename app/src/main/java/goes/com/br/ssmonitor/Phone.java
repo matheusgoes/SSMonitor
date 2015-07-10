@@ -1,4 +1,4 @@
-package workshopee.ct.ufrn.br.ssmonitor;
+package goes.com.br.ssmonitor;
 
 /**
  * Created by jaack05 on 19/04/15.
@@ -14,6 +14,8 @@ public class Phone {
     private String netWorkType;
     private int cid;
     private int lac;
+    private int ASU;
+
 
     public Phone() {
         mcc = mnc = torres = 0;
@@ -121,5 +123,13 @@ public class Phone {
 
     public void setLac(int lac) {
         this.lac = lac;
+    }
+
+    public int getASU() {
+        return ASU;
+    }
+
+    public void setASU(int ASU) {
+        this.ASU = ASU;
     }
 }

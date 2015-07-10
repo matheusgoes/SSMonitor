@@ -1,4 +1,4 @@
-package workshopee.ct.ufrn.br.ssmonitor;
+package goes.com.br.ssmonitor;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -25,18 +25,20 @@ import android.telephony.CellSignalStrengthCdma;
 import android.telephony.CellSignalStrengthGsm;
 import android.telephony.CellSignalStrengthLte;
 import android.telephony.CellSignalStrengthWcdma;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     final static String QUIT = "quit";
-    Phone cell = new Phone();
+    public Phone cell = new Phone();
     Database_Acesso database_acesso;
     NavigationDrawerFragment mNavigationDrawerFragment;
     CharSequence mTitle;
@@ -61,31 +63,49 @@ public class MainActivity extends ActionBarActivity
     Location lastLocation;
     boolean notifications_actived = true;
     int fragmentId;
+    MyPhoneStateListener MyListener;
+    //private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Se existir alguma notificação, remova.
         if (n != null)
             mNotificationManager.cancelAll();
+/*        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("ca-app-pub-3940256099942544/1033173712")
+                .build();
 
+        mInterstitialAd.loadAd(adRequest);*/
         super.onCreate(savedInstanceState);
         bundle = savedInstanceState;
+        //Cria banco de dados
         database_acesso = new Database_Acesso(getApplicationContext());
+        //Cria objeto de notificações
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //Cria objeto de gerenciamento de recursos do celular
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
+        MyListener   = new MyPhoneStateListener();
+        telephonyManager.listen(MyListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+        //Se o comando anterior tiver sido bem sucedido, prossiga...
         if (telephonyManager != null) {
+            //Se o acesso ao SIM estiver disponível, prossiga...
             if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_READY) {
+                //Obtem objeto para acessar localização
                 locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                //Se os serviços de localização estiverem disponíveis, prossiga...
                 if ((locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationmanager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
+                    //Define ActivityMain como tela principal.
                     setContentView(R.layout.activity_main);
 
-                    //Cria menu de navegação
+                    //Cria menu de navegação e action bar
                     mNavigationDrawerFragment = (NavigationDrawerFragment)
                             getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
                     mTitle = getTitle();
-
                     fragmentId = R.id.navigation_drawer;
                     drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
                     // Configura menu de navegação
                     mNavigationDrawerFragment.setUp(
                             fragmentId,
@@ -95,20 +115,31 @@ public class MainActivity extends ActionBarActivity
                     //Inicializa Localização
                     criteria = new Criteria();
                     criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                    //seleciona o melhor provedor de localização
                     provider = locationmanager.getBestProvider(criteria, true);
+                    //Se houver ultima localização conhecida, prossiga
                     if (locationmanager.getLastKnownLocation(provider) != null) {
+                        //Obtem ultima localização
                         location = locationmanager.getLastKnownLocation(provider);
+                        //Obtem latitude
                         cell.setLatitude(location.getLatitude());
+                        //Obtem longitude
                         cell.setLongitude(location.getLongitude());
+                    // senão, obtenha usando a classe GPSTracker
                     } else {
                         gpsTracker = new GPSTracker(this);
+                        //Obtem ultima localização
                         location = gpsTracker.getLocation();
+                        //Obtem latitude
                         cell.setLatitude(gpsTracker.getLatitude());
+                        //Obtem longitude
                         cell.setLongitude(gpsTracker.getLongitude());
                     }
-
+                    //Executa função de obtenção de informações
                     getInfo(location);
+                    //Define listener para variações de localização
                     locationListener = new LocationListener() {
+                        //Quando houver mudança na localização, executar novamente função de coleta de dados
                         @Override
                         public void onLocationChanged(Location _location) {
                             getInfo(_location);
@@ -127,22 +158,26 @@ public class MainActivity extends ActionBarActivity
                         }
                     };
 
-                    //Define atualização de localização
+                    //Define atualizações de localização
                     locationmanager.requestLocationUpdates(provider, 1000, 1, locationListener);
+
+                //senão, mostrar tela "Sem serviços de localização"
                 } else {
                     setContentView(R.layout.activity_location_services_off);
                 }
+            //senão, mostrar tela "Sem sim"
             } else {
                 setContentView(R.layout.semsim);
             }
+        //senão, mostrar tela "Sem sim"
         } else {
             setContentView(R.layout.semsim);
         }
     }
-
+    //Funcão para clique nos itens da lista de navegação
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
+        // Trocar fragmento do content view principal
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position))
@@ -150,7 +185,7 @@ public class MainActivity extends ActionBarActivity
     }
 
 
-
+    //Troca titulo do action bar de acordo com o item clicado na menu de navegação
     public void onSectionAttached(int number) {
         switch (number) {
             case 0:
@@ -170,7 +205,7 @@ public class MainActivity extends ActionBarActivity
                 break;
         }
     }
-
+    //Atualização action bar com o novo titulo obtido na função onSectionAttached
     public void restoreActionBar() {
         actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
@@ -178,14 +213,11 @@ public class MainActivity extends ActionBarActivity
         actionBar.setTitle(mTitle);
     }
 
-
+    //Função de criação do menu de navegação
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mNavigationDrawerFragment!=null){
             if (!mNavigationDrawerFragment.isDrawerOpen()) {
-                // Only show items in the action bar relevant to this screen
-                // if the drawer is not showing. Otherwise, let the drawer
-                // decide what to show in the action bar.
                 _menu = menu;
                 getMenuInflater().inflate(R.menu.main, menu);
                 restoreActionBar();
@@ -221,11 +253,12 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mNotificationManager.cancelAll();
+        mNotificationManager.cancelAll(); // Ao destruir aplicação, remover todas as notificações
     }
 
     @Override
     protected void onResume() {
+        //Ao resumir, remover notificações e obter novas intents
         super.onResume();
         if (n != null){
             mNotificationManager.cancelAll();
@@ -236,20 +269,25 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        //Se houver nova intent com action igual a QUIT, executar função quit()
         if (intent.getAction().equals(QUIT)){
             quit();
         }
     }
 
+    //Ao perder o foco, configurar notificações
     @Override
     protected void onStop() {
         super.onStop();
+        //Verifica se as notificações estão ativas (Tela de configurações)
         if (notifications_actived){
+            //Define intent da notificação
             Intent intent = new Intent(this, MainActivity.class);
+            //Define acão da intent
             intent.setAction(QUIT);
             Log.i("OnStop()", "Intent action: " + intent.getAction());
             PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
+            //Constrói notificação
             n  = new Notification.Builder(this)
                     .setContentTitle("Ainda estamos aqui!")
                     .setContentText("Clique para encerrar")
@@ -257,12 +295,13 @@ public class MainActivity extends ActionBarActivity
                     .setContentIntent(pIntent)
                     .setAutoCancel(true)
                     .addAction(R.drawable.abc_ic_clear_mtrl_alpha, "Finalizar", pIntent).build();
-
+            //Exibe notificação
             mNotificationManager.notify(0, n);
         }
     }
 
     public void quit(){
+        //Destroi objetos inicializados para evitar que eles continuem executando em segundo plano
         if (locationmanager!=null){
             locationmanager.removeUpdates(locationListener);
             Log.i("App"," Updates removed.");
@@ -276,6 +315,7 @@ public class MainActivity extends ActionBarActivity
         locationmanager=null;
         location = null;
         telephonyManager = null;
+        //Fecha activity
         finish();
         Log.i("App"," FINISHING");
     }
@@ -284,7 +324,8 @@ public class MainActivity extends ActionBarActivity
         //Obtem novos dados de localização
         cell.setLatitude(location.getLatitude());
         cell.setLongitude(location.getLongitude());
-
+        /*
+        //Obtem tipo de conexão
         String tipo;
         try {
             CellInfo info = telephonyManager.getAllCellInfo().get(0);
@@ -314,10 +355,9 @@ public class MainActivity extends ActionBarActivity
             Log.i("Cell Info", "Tipo: " + tipo + ". Torres: " + cell.getTorres() + ". DBM: " + cell.getDbm());
         }catch (Exception e) {
             Log.e("CELL INFO: ", "Unable to obtain cell signal information", e);
-        }
-
+        }*/
+        //Obtem nome da operadora e informações de rede enquanto constroi objeto cell (Phone)
         cell.setOperadora(telephonyManager.getNetworkOperatorName());
-
         if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM) {
             GsmCellLocation gsmLocation = (GsmCellLocation) telephonyManager.getCellLocation();
             cell.setCid(gsmLocation.getCid());
@@ -391,8 +431,75 @@ public class MainActivity extends ActionBarActivity
         }
         //mensagem de Log.
         Log.i("Called: ", "location changed. Lat: " + cell.getLatitude() + " lng: " + cell.getLongitude());
+        //insere novo objeto no banco de dados
         database_acesso.inserir_phone(cell);
         lastLocation = location;
+    }
+
+    private class MyPhoneStateListener extends PhoneStateListener {
+        /* Get the Signal strength from the provider, each tiome there is an update */
+        @Override
+        public void onSignalStrengthsChanged(SignalStrength signalStrength){
+            super.onSignalStrengthsChanged(signalStrength);
+            int SignalStrength_ASU =  signalStrength.getGsmSignalStrength();
+            if (signalStrength.isGsm()) {
+                if (signalStrength.getGsmSignalStrength() != 99) {
+                    int levelDbm, level;
+                    int SignalStrength_dBm = SignalStrength_ASU * 2 - 113;
+                    if (SignalStrength_dBm >= -75) levelDbm = 4;
+                    else if (SignalStrength_dBm >= -85) levelDbm = 3;
+                    else if (SignalStrength_dBm >= -95) levelDbm = 2;
+                    else if (SignalStrength_dBm >= -100) levelDbm = 1;
+                    else levelDbm = 0;
+
+                    if (SignalStrength_ASU < 2 || SignalStrength_ASU==99) level = 0;
+                    else if (SignalStrength_ASU >= 12) level = 4;
+                    else if (SignalStrength_ASU >= 8) level = 3;
+                    else if (SignalStrength_ASU >= 5) level = 2;
+                    else level = 1;
+
+                    cell.setTorres(level);
+                    cell.setDbm(SignalStrength_dBm);
+                    cell.setASU(SignalStrength_ASU);
+
+                }else
+                    SignalStrength_ASU = signalStrength.getGsmSignalStrength();
+            } else {
+                final int snr = signalStrength.getEvdoSnr();
+                final int cdmaDbm = signalStrength.getCdmaDbm();
+                final int cdmaEcio = signalStrength.getCdmaEcio();
+                int levelDbm;
+                int levelEcio;
+                int level = 0;
+
+                if (snr == -1) {
+                    Log.i("cdmaDbm ", String.valueOf(cdmaDbm));
+
+                    if (cdmaDbm >= -75) levelDbm = 4;
+                    else if (cdmaDbm >= -85) levelDbm = 3;
+                    else if (cdmaDbm >= -95) levelDbm = 2;
+                    else if (cdmaDbm >= -100) levelDbm = 1;
+                    else levelDbm = 0;
+
+                    // Ec/Io are in dB*10
+                    if (cdmaEcio >= -90) levelEcio = 4;
+                    else if (cdmaEcio >= -110) levelEcio = 3;
+                    else if (cdmaEcio >= -130) levelEcio = 2;
+                    else if (cdmaEcio >= -150) levelEcio = 1;
+                    else levelEcio = 0;
+
+                    level = (levelDbm < levelEcio) ? levelDbm : levelEcio;
+                } else {
+                    if (snr == 7 || snr == 8) level =4;
+                    else if (snr == 5 || snr == 6 ) level =3;
+                    else if (snr == 3 || snr == 4) level = 2;
+                    else if (snr ==1 || snr ==2) level =1;
+
+                }
+                Log.i("Bars ", String.valueOf(level));
+            }
+
+        }
     }
 }
 

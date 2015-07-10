@@ -1,4 +1,4 @@
-package workshopee.ct.ufrn.br.ssmonitor;
+package goes.com.br.ssmonitor;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -37,7 +37,6 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class PlaceholderFragment extends Fragment {
@@ -75,6 +74,8 @@ public class PlaceholderFragment extends Fragment {
         int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
         switch (sectionNumber) {
             case 1:
+                //Tela monitor
+                //Altera os textos dos textviews de acordo com os atributos do objeto cell da main activity
                 rootView = inflater.inflate(R.layout.fragment_monitor, container, false);
 
                 TextView forcasinal = (TextView) rootView.findViewById(R.id.forca),
@@ -87,11 +88,11 @@ public class PlaceholderFragment extends Fragment {
                         longitude_textview = (TextView) rootView.findViewById(R.id.lon),
                         netWork = (TextView) rootView.findViewById(R.id.tipoderede);
 
-                forcasinal.setText("Qualidade do sinal: Torres: " + main.cell.getTorres() + " - DBM:  " + main.cell.getDbm());
+                forcasinal.setText("Qualidade do sinal: Torres: " + main.cell.getTorres() + " - DBM:  " + main.cell.getDbm()+ " - ASU:  " + main.cell.getASU());
                 operadoraview.setText("Operadora: " + main.telephonyManager.getNetworkOperatorName() +" - "+ main.cell.getPhoneType());
                 netWork.setText("Tipo de rede: " + main.cell.getNetWorkType());
-                cidview.setText("CID " +main.cell.getCid());
-                lacview.setText("LAC " + main.cell.getLac());
+                cidview.setText("CID: " +main.cell.getCid());
+                lacview.setText("LAC: " + main.cell.getLac());
                 mccview.setText("Mobile Country Code (MCC): " + main.cell.getMcc());
                 mncview.setText("Mobile Network Code (MNC): " + main.cell.getMnc());
                 latitude_textview.setText("Latitude: " + main.cell.getLatitude());
@@ -99,6 +100,8 @@ public class PlaceholderFragment extends Fragment {
                 break;
 
             case 2:
+                //Mapas
+                //Cria heatmap de acordo com os dados de localização de intensidade do sinal armazenados no banco de dados
                 rootView = inflater.inflate(R.layout.activity_mapa, container, false);
                 mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
                 List<Phone> listMap =  main.database_acesso.buscar_phone();
@@ -120,10 +123,11 @@ public class PlaceholderFragment extends Fragment {
                     float[] startPoints = {
                             0.1f, 0.2f ,0.3f
                     };
-
+                    //Array de pontos. Os pontos do heatmap são ponderados pela intensidade do sinal
                     ArrayList<WeightedLatLng> pontos = new ArrayList<>();
 
                     for (int i = 0; i < listMap.size(); i++) {
+                        //Atribuição dos pontos
                         pontos.add(new WeightedLatLng(new LatLng(listMap.get(i).getLatitude(), listMap.get(i).getLongitude()), listMap.get(i).getDbm()));
                     }
                     mProvider = new HeatmapTileProvider
@@ -147,6 +151,8 @@ public class PlaceholderFragment extends Fragment {
                 });
                 break;
             case 3:
+                //Graficos
+                //Obetem dados do banco de dados e cria serie de dados e plota os mesmos no graphview definido nos layouts
                 rootView = inflater.inflate(R.layout.fragment_graficos, container, false);
                 final GraphView graph = (GraphView) rootView.findViewById(R.id.graph);
                 Spinner spinnerGraficos = (Spinner) rootView.findViewById(R.id.spinnerGraficos);
@@ -154,9 +160,9 @@ public class PlaceholderFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         List<Phone> list = main.database_acesso.buscar_phone();
+                        graph.removeAllSeries();
                         switch (position) {
                             case 0:
-                                graph.removeAllSeries();
                                 PointsGraphSeries<DataPoint> series1;
                                 DataPoint[] dataPoint1 = new DataPoint[list.size()];
                                 for(int i=0; i<list.size(); i++) {
@@ -168,7 +174,6 @@ public class PlaceholderFragment extends Fragment {
                                 graph.addSeries(series1);
                                 break;
                             case 1:
-                                graph.removeAllSeries();
                                 PointsGraphSeries<DataPoint> series3;
                                 DataPoint[] dataPoint3 = new DataPoint[list.size()];
                                 for(int i=0; i<list.size(); i++) {
@@ -185,11 +190,11 @@ public class PlaceholderFragment extends Fragment {
                                 for(int i=0; i<list.size(); i++) {
                                     dataPoint2[i] = new DataPoint(i, list.get(i).getTorres());
                                 }
-                                graph.removeAllSeries();
                                 serieSinal = new PointsGraphSeries<>(dataPoint2);
                                 serieSinal.setColor(Color.parseColor("#990000"));
                                 serieSinal.setShape(PointsGraphSeries.Shape.POINT);
                                 graph.addSeries(serieSinal);
+                                graph.setActivated(true);
                                 break;
                         }
                     }
@@ -201,6 +206,7 @@ public class PlaceholderFragment extends Fragment {
                 });
                 break;
             case 4:
+                //Lista todos os dados armazenados no banco de dados
                 rootView = inflater.inflate(R.layout.fragment_list, container, false);
                 final ListView list_view = (ListView) rootView.findViewById(R.id.listView);
                 List<Phone> list =  main.database_acesso.buscar_phone();
@@ -221,9 +227,12 @@ public class PlaceholderFragment extends Fragment {
                 });
                 break;
             case 5:
+                //Mostra tela sobre
                 rootView = inflater.inflate(R.layout.fragment_sobre, container, false);
                 break;
             case 1000:
+                //Configurações
+                //Define tipo de mapa e ativa/desativa notificações
                 main.getSupportActionBar().setTitle("Configurações");
                 rootView = inflater.inflate(R.layout.fragment_settings, container, false);
                 Spinner spinnerMapas = (Spinner) rootView.findViewById(R.id.spinnerMapas);
@@ -263,7 +272,9 @@ public class PlaceholderFragment extends Fragment {
 
                 break;
             default:
+                //Define fragment padrão como fragment_main
                 rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                //Implementa click na imagem da tela inicial para abrir menu de navegação
                 ImageView imageView = (ImageView) rootView.findViewById(R.id.logoInicio);
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override

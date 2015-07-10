@@ -1,4 +1,4 @@
-package workshopee.ct.ufrn.br.ssmonitor;
+package goes.com.br.ssmonitor;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

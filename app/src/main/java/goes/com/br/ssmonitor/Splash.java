@@ -1,4 +1,4 @@
-package workshopee.ct.ufrn.br.ssmonitor;
+package goes.com.br.ssmonitor;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+//IMAGEM MOSTRADA NA INICIALIZAÇÃO DO APP
 
 public class Splash extends ActionBarActivity {
     private static final long SPLASH_DISPLAY_LENGTH = 2000;
